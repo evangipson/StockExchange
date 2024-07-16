@@ -1,0 +1,6 @@
+@StockExchange.WebApi_HostAddress = http://localhost:5053
+
+GET {{StockExchange.WebApi_HostAddress}}/api/company/
+Accept: application/json
+
+###

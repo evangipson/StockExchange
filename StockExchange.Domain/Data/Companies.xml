@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Companies>
+  <Company>
+	<Name>Michaelsoft</Name>
+	<TickerName>MSFT</TickerName>
+	<StockAmount>1000000</StockAmount>
+	<IPODate>2002-05-30T09:00:00</IPODate>
+	<CostOfGoodsSold>450000000</CostOfGoodsSold>
+	<NetSales>1000000000</NetSales>
+	<Debt>50000000</Debt>
+	<NonOperatingItems>0</NonOperatingItems>
+	<Stock>
+	  <Open>125</Open>
+	  <Close>127</Close>
+	  <High>188</High>
+	  <Low>25</Low>
+	  <MarketCap>1000000000</MarketCap>
+	  <Volume>250000000</Volume>
+	</Stock>
+  </Company>
+  <Company>
+	<Name>Bapple</Name>
+	<TickerName>BAP</TickerName>
+	<StockAmount>1000000</StockAmount>
+	<IPODate>2001-05-30T09:00:00</IPODate>
+	<CostOfGoodsSold>550000000</CostOfGoodsSold>
+	<NetSales>2000000000</NetSales>
+	<Debt>25000000</Debt>
+	<NonOperatingItems>1000000</NonOperatingItems>
+	<Stock>
+	  <Open>135</Open>
+	  <Close>138</Close>
+	  <High>218</High>
+	  <Low>19</Low>
+	  <MarketCap>1700000000</MarketCap>
+	  <Volume>210000000</Volume>
+	</Stock>
+  </Company>
+</Companies>
