@@ -12,25 +12,25 @@ namespace StockExchange.Domain.Models
 
 		public DateTime IPODate { get; set; }
 
-		public float CostOfGoodsSold { get; set; }
+		public decimal CostOfGoodsSold { get; set; }
 
-		public float NetSales { get; set; }
+		public decimal NetSales { get; set; }
 
-		public float Debt { get; set; }
+		public decimal Debt { get; set; }
 
-		public float NonOperatingItems { get; set; }
+		public decimal NonOperatingItems { get; set; }
 
-		public List<float> Expenses { get; set; } = new List<float>();
+		public List<decimal> Expenses { get; set; } = new List<decimal>();
 
 		public Stock? Stock { get; set; }
 
-		public float GrossProfit => NetSales - CostOfGoodsSold;
+		public decimal GrossProfit => NetSales - CostOfGoodsSold;
 
-		public float OperatingExpenses => Expenses.Sum();
+		public decimal OperatingExpenses => Expenses.Sum();
 
-		public float OperatingIncome => GrossProfit - OperatingExpenses;
+		public decimal OperatingIncome => GrossProfit - OperatingExpenses;
 
-		public float NetIncome => OperatingIncome - NonOperatingItems;
+		public decimal NetIncome => OperatingIncome - NonOperatingItems;
 
 		public override string ToString()
 		{

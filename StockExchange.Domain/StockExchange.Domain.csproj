@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\StockExchange.Base\StockExchange.Base.csproj" />
+  </ItemGroup>
+
 </Project>

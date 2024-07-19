@@ -2,9 +2,9 @@
 
 namespace StockExchange.Logic.Services.Interfaces
 {
-	public interface ISerializationService
+	public interface ICompanyService
 	{
-		IEnumerable<Company> GetCompany(string? companyName = null);
+		IEnumerable<Company>? GetCompany(string? companyName = null);
 
 		bool SetCompany(Company company);
 	}

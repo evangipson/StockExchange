@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<Companies>
-  <Company>
+<SerializedList>
+  <SerializedItem type="Company">
 	<Name>Michaelsoft</Name>
 	<TickerName>MSFT</TickerName>
 	<StockAmount>1000000</StockAmount>
@@ -17,8 +17,8 @@
 	  <MarketCap>1000000000</MarketCap>
 	  <Volume>250000000</Volume>
 	</Stock>
-  </Company>
-  <Company>
+  </SerializedItem>
+  <SerializedItem type="Company">
 	<Name>Bapple</Name>
 	<TickerName>BAP</TickerName>
 	<StockAmount>1000000</StockAmount>
@@ -35,5 +35,5 @@
 	  <MarketCap>1700000000</MarketCap>
 	  <Volume>210000000</Volume>
 	</Stock>
-  </Company>
-</Companies>
+  </SerializedItem>
+</SerializedList>

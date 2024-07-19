@@ -7,18 +7,19 @@ namespace StockExchange.WebApi.Controllers
 	[Route("/api/company")]
 	public class CompanyController : Controller
 	{
-		private readonly ISerializationService _serializationService;
+		private readonly ICompanyService _companyService;
 
-		public CompanyController(ISerializationService serializationService)
+		public CompanyController(ICompanyService companyService)
 		{
-			_serializationService = serializationService;
+			_companyService = companyService;
 		}
 	
 		[HttpGet(Name = "Company")]
 		public IActionResult GetAllCompanyData(string? tickerName)
 		{
-			var matchingCompany = _serializationService.GetCompany(tickerName);
-			return matchingCompany.Count() > 0 ? Ok(matchingCompany) : NotFound();
+			var matchingCompanies = _companyService.GetCompany(tickerName);
+
+			return matchingCompanies == null ? NotFound() : Ok(matchingCompanies);
 		}
 	}
 }
