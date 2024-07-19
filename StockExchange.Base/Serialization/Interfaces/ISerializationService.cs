@@ -1,6 +1,6 @@
 ﻿namespace StockExchange.Base.Serialization.Interfaces
 {
-    public interface ISerializationService<EntityType> where EntityType : class, new()
+	public interface ISerializationService<EntityType> where EntityType : class, new()
 	{
 		IEnumerable<EntityType> GetAll(string xmlFilePath);
 

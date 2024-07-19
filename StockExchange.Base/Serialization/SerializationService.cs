@@ -7,7 +7,7 @@ using StockExchange.Base.Serialization.Interfaces;
 
 namespace StockExchange.Base.Services
 {
-    [Service(typeof(ISerializationService<>))]
+	[Service(typeof(ISerializationService<>))]
 	public class SerializationService<EntityType> : ISerializationService<EntityType> where EntityType : class, new()
 	{
 		private readonly ILogger<SerializationService<EntityType>> _logger;
