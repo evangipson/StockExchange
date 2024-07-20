@@ -1,6 +1,6 @@
 ﻿using System.Xml.Serialization;
 
-namespace StockExchange.Base.Serialization
+namespace StockExchange.Base.Serialization.Models
 {
 	[XmlRoot("SerializedList")]
 	public struct SerializedList<EntityType>() where EntityType : class, new()

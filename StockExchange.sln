@@ -10,6 +10,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StockExchange.Logic", "StockExchange.Logic\StockExchange.Logic.csproj", "{8A02849A-D842-4D1C-92C8-572731A04291}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StockExchange.WebApi", "StockExchange.WebApi\StockExchange.WebApi.csproj", "{21E1802C-C6B9-4186-AAB5-79ADE070F803}"
+	ProjectSection(ProjectDependencies) = postProject
+		{BD0AAB95-97BB-46C6-860F-5AFDEBF6FE45} = {BD0AAB95-97BB-46C6-860F-5AFDEBF6FE45}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

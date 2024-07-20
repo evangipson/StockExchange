@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace StockExchange.Base.DependencyInjection
+namespace StockExchange.Base.DependencyInjection.Attributes
 {
 	/// <summary>
 	/// The <c>[Service]</c> attribute which enables services

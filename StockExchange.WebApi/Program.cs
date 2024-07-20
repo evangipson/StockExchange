@@ -1,6 +1,9 @@
 using System.Reflection;
-using StockExchange.Base.DependencyInjection;
-using StockExchange.Base.Serialization.Interfaces;
+
+using StockExchange.Base.DependencyInjection.Extensions;
+using StockExchange.Base.Serialization.Services.Interfaces;
+using StockExchange.Logic.Factories.Interfaces;
+using StockExchange.Logic.Repositories.Interfaces;
 using StockExchange.Logic.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,7 +20,9 @@ builder.Services.AddLogging(cfg => cfg.AddConsole());
 
 // add StockExchange services from StockExchange.Base and StockExchange.Services using reflection
 builder.Services.AddServicesFromAssembly(Assembly.GetAssembly(typeof(ISerializationService<>)));
-builder.Services.AddServicesFromAssembly(Assembly.GetAssembly(typeof(ICompanyService)));
+builder.Services.AddServicesFromAssembly(Assembly.GetAssembly(typeof(IOrderFactory)));
+builder.Services.AddServicesFromAssembly(Assembly.GetAssembly(typeof(ICompanyRepository)));
+builder.Services.AddServicesFromAssembly(Assembly.GetAssembly(typeof(IPricingService)));
 
 // instantiate depenedency injection concrete object
 var app = builder.Build();

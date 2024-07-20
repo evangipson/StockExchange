@@ -1,7 +1,8 @@
 ﻿using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
+using StockExchange.Base.DependencyInjection.Attributes;
 
-namespace StockExchange.Base.DependencyInjection
+namespace StockExchange.Base.DependencyInjection.Extensions
 {
 	/// <summary>
 	/// A collection of <c>static</c> methods intended to

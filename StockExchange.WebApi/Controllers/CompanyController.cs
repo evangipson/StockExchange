@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using StockExchange.Logic.Services.Interfaces;
+using StockExchange.Logic.Repositories.Interfaces;
 
 namespace StockExchange.WebApi.Controllers
 {
@@ -7,17 +7,17 @@ namespace StockExchange.WebApi.Controllers
 	[Route("/api/company")]
 	public class CompanyController : Controller
 	{
-		private readonly ICompanyService _companyService;
+		private readonly ICompanyRepository _companyRepository;
 
-		public CompanyController(ICompanyService companyService)
+		public CompanyController(ICompanyRepository companyRepository)
 		{
-			_companyService = companyService;
+			_companyRepository = companyRepository;
 		}
-	
+
 		[HttpGet(Name = "Company")]
 		public IActionResult GetAllCompanyData(string? tickerName)
 		{
-			var matchingCompanies = _companyService.GetCompany(tickerName);
+			var matchingCompanies = _companyRepository.GetCompany(tickerName);
 
 			return matchingCompanies == null ? NotFound() : Ok(matchingCompanies);
 		}

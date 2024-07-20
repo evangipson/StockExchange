@@ -1,4 +1,4 @@
-﻿namespace StockExchange.Domain.Models
+﻿namespace StockExchange.Domain.Models.Orders
 {
 	public enum OrderType
 	{
