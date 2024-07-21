@@ -8,12 +8,16 @@
 
   <ItemGroup>
     <None Remove="Resources\Data\Companies.xml" />
+    <None Remove="Resources\Data\Orders.xml" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Resources\Data\Companies.xml">
+    <Content Include="Resources\Data\Companies.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
+    </Content>
+    <Content Include="Resources\Data\Orders.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>

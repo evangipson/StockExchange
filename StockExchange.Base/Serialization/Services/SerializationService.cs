@@ -1,5 +1,7 @@
-﻿using System.Xml.Serialization;
+﻿using System.Xml;
+using System.Xml.Serialization;
 using Microsoft.Extensions.Logging;
+
 using StockExchange.Base.DependencyInjection.Attributes;
 using StockExchange.Base.Serialization.Models;
 using StockExchange.Base.Serialization.Services.Interfaces;
@@ -7,7 +9,7 @@ using StockExchange.Base.Serialization.Services.Interfaces;
 namespace StockExchange.Base.Serialization.Services
 {
 	[Service(typeof(ISerializationService<>))]
-	public class SerializationService<EntityType> : ISerializationService<EntityType> where EntityType : class, new()
+	public class SerializationService<EntityType> : ISerializationService<EntityType> where EntityType : ISerializedEntity, new()
 	{
 		private readonly ILogger<SerializationService<EntityType>> _logger;
 		private readonly XmlSerializer _serializer;
@@ -22,11 +24,11 @@ namespace StockExchange.Base.Serialization.Services
 			_typeName = typeof(EntityType).Name;
 		}
 
-		public IEnumerable<EntityType>? GetAll(Stream? serializationSource)
+		public IEnumerable<EntityType>? GetAll(string? serializationFilePath)
 		{
-			if (serializationSource == null)
+			if (string.IsNullOrEmpty(serializationFilePath))
 			{
-				_logger.LogError($"{nameof(GetAll)}: {_typeName} data not found. Can't get {_typeName.ToLower()}.");
+				_logger.LogInformation($"{nameof(Get)}: {_typeName} datasource file path not found. Can't get {_typeName.ToLower()}.");
 				return null;
 			}
 
@@ -36,26 +38,29 @@ namespace StockExchange.Base.Serialization.Services
 				return _entityList.Entities;
 			}
 
-			using (StreamReader reader = new StreamReader(serializationSource))
+			using (StreamReader streamReader = new StreamReader(serializationFilePath))
 			{
-				_logger.LogInformation($"{nameof(Get)}: Got every {_typeName.ToLower()} from file.");
-				_entityList = _serializer.Deserialize(reader) as SerializedList<EntityType>? ?? new SerializedList<EntityType>();
+				if (streamReader == null)
+				{
+					_logger.LogError($"{nameof(Get)}: Couldn't open file for reading, did not get the {_typeName.ToLower()}.");
+					return null;
+				}
+
+				using (StringReader stringReader = new StringReader(streamReader.ReadToEnd()))
+				{
+					_entityList = _serializer.Deserialize(stringReader) as SerializedList<EntityType>? ?? new SerializedList<EntityType>();
+					_logger.LogInformation($"{nameof(Get)}: Got every {_typeName.ToLower()} from file.");
+				}
 			}
 
 			return _entityList.Entities;
 		}
 
-		public EntityType? Get<SerializedAccessor>(SerializedAccessor accessor, Stream? serializationSource)
+		public EntityType? Get<SerializedAccessor>(SerializedAccessor accessor, string? serializationFilePath)
 		{
-			if (serializationSource == null)
-			{
-				_logger.LogError($"{nameof(GetAll)}: {_typeName} data not found. Can't get {_typeName.ToLower()}.");
-				return null;
-			}
+			IEnumerable<EntityType>? entities = GetAll(serializationFilePath) ?? [];
 
-			IEnumerable<EntityType>? entities = GetAll(serializationSource);
-
-			return entities?.FirstOrDefault(entity =>
+			return entities.FirstOrDefault(entity =>
 			{
 				var entityProperties = typeof(EntityType).GetProperties();
 				foreach (var property in entityProperties)
@@ -71,27 +76,48 @@ namespace StockExchange.Base.Serialization.Services
 			});
 		}
 
-		public bool Set(EntityType entity, Stream? serializationSource)
+		// TODO: Figure out how to populate _entityList.Entities with XML before setting for the first time
+		public bool Set(EntityType entity, string? serializationFilePath)
 		{
-			if (serializationSource == null)
+			if (string.IsNullOrEmpty(serializationFilePath))
 			{
-				_logger.LogError($"{nameof(GetAll)}: {_typeName} data not found. Can't set {_typeName.ToLower()}.");
+				_logger.LogInformation($"{nameof(Set)}: {_typeName} datasource file path not found. Can't set {_typeName.ToLower()}.");
 				return false;
 			}
 
 			try
 			{
 				_logger.LogInformation($"{nameof(Set)}: Trying to update {_typeName.ToLower()}.");
-				using (StreamWriter writer = new StreamWriter(serializationSource))
+				var xmlSettings = new XmlWriterSettings { Indent = true, NewLineOnAttributes = true, OmitXmlDeclaration = true, WriteEndDocumentOnClose = true };
+				var xmlNamespace = new XmlSerializerNamespaces();
+				xmlNamespace.Add("", "");
+
+				var matchedEntity = _entityList.Entities.Find(entityListEntry => entityListEntry.Equals(entity));
+				if (matchedEntity == null)
 				{
-					_serializer.Serialize(writer, entity);
-					_logger.LogInformation($"{nameof(Set)}: Updated {_typeName.ToLower()}.");
-
-					_entityList = new SerializedList<EntityType>();
-					_logger.LogInformation($"{nameof(Set)}: Busted in-memory cache for {_typeName.ToLower()} list.");
-
-					return true;
+					_logger.LogInformation($"{nameof(Set)}: Couldn't find {_typeName.ToLower()} to update, creating a new entity in serialization.");
+					_entityList.Entities.Add(entity);
 				}
+				else
+				{
+					_logger.LogInformation($"{nameof(Set)}: Found {_typeName.ToLower()} to update.");
+					_entityList.Entities.Remove(matchedEntity);
+					_entityList.Entities.Add(entity);
+				}
+
+				using (XmlWriter writer = XmlWriter.Create(serializationFilePath, xmlSettings))
+				{
+					if (writer == null)
+					{
+						_logger.LogError($"{nameof(Get)}: Couldn't open file for reading, did not get the {_typeName.ToLower()}.");
+						return false;
+					}
+
+					_serializer.Serialize(writer, _entityList, xmlNamespace);
+					_logger.LogInformation($"{nameof(Set)}: Updated {_typeName.ToLower()}.");
+				}
+
+				return true;
 			}
 			catch
 			{

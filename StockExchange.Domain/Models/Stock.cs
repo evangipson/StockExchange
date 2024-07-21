@@ -1,5 +1,7 @@
 ﻿using System.Globalization;
 
+using StockExchange.Base.Serialization.Services.Interfaces;
+
 namespace StockExchange.Domain.Models
 {
 	public class Stock

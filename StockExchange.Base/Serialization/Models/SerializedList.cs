@@ -3,7 +3,7 @@
 namespace StockExchange.Base.Serialization.Models
 {
 	[XmlRoot("SerializedList")]
-	public struct SerializedList<EntityType>() where EntityType : class, new()
+	public struct SerializedList<EntityType>() where EntityType : ISerializedEntity, new()
 	{
 		private List<EntityType> _entities;
 

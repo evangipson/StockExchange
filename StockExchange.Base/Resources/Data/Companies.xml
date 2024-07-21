@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <SerializedList>
-  <SerializedItem type="Company">
+  <SerializedItem>
 	<Name>Michaelsoft</Name>
 	<TickerName>MSFT</TickerName>
 	<StockAmount>1000000</StockAmount>
@@ -18,7 +18,7 @@
 	  <Volume>250000000</Volume>
 	</Stock>
   </SerializedItem>
-  <SerializedItem type="Company">
+  <SerializedItem>
 	<Name>Bapple</Name>
 	<TickerName>BAP</TickerName>
 	<StockAmount>1000000</StockAmount>

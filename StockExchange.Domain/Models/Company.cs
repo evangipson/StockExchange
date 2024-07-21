@@ -1,8 +1,9 @@
 ﻿using System.Globalization;
+using StockExchange.Base.Serialization.Models;
 
 namespace StockExchange.Domain.Models
 {
-	public class Company
+	public class Company : ISerializedEntity
 	{
 		public string Name { get; set; } = string.Empty;
 
@@ -31,6 +32,13 @@ namespace StockExchange.Domain.Models
 		public decimal OperatingIncome => GrossProfit - OperatingExpenses;
 
 		public decimal NetIncome => OperatingIncome - NonOperatingItems;
+
+		// ISerializedEntity properties
+		public string ElementName => "Company";
+
+		public string FileName => "Companies.xml";
+
+		public Guid EntityId => Guid.NewGuid();
 
 		public override string ToString()
 		{

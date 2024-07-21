@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using StockExchange.Logic.Repositories.Interfaces;
+
+using StockExchange.Base.Serialization.Repositories.Interfaces;
+using StockExchange.Domain.Models;
 
 namespace StockExchange.WebApi.Controllers
 {
@@ -7,9 +9,9 @@ namespace StockExchange.WebApi.Controllers
 	[Route("/api/company")]
 	public class CompanyController : Controller
 	{
-		private readonly ICompanyRepository _companyRepository;
+		private readonly ISerializableRepository<Company> _companyRepository;
 
-		public CompanyController(ICompanyRepository companyRepository)
+		public CompanyController(ISerializableRepository<Company> companyRepository)
 		{
 			_companyRepository = companyRepository;
 		}
@@ -17,9 +19,9 @@ namespace StockExchange.WebApi.Controllers
 		[HttpGet(Name = "Company")]
 		public IActionResult GetAllCompanyData(string? tickerName)
 		{
-			var matchingCompanies = _companyRepository.GetCompany(tickerName);
+			var matchingCompanies = _companyRepository.GetEntity(tickerName);
 
-			return matchingCompanies == null ? NotFound() : Ok(matchingCompanies);
+			return matchingCompanies == null ? StatusCode(500) : Ok(matchingCompanies);
 		}
 	}
 }

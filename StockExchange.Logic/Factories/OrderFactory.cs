@@ -20,7 +20,12 @@ namespace StockExchange.Logic.Factories
 		public Order? CreateOrder()
 		{
 			_logger.LogInformation($"{nameof(CreateOrder)}: Creating order.");
-			return null;
+
+			return new Order
+			{
+				OrderId = Guid.NewGuid(),
+				DateCreated = DateTime.UtcNow
+			};
 		}
 	}
 }

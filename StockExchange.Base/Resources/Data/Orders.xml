@@ -1,0 +1,10 @@
+﻿<SerializedList>
+  <SerializedItem>
+    <OrderId>19291137-4051-4b38-a8ce-4fa899a95c73</OrderId>
+    <Amount>0</Amount>
+    <Type>MarketOrder</Type>
+    <DateCreated>2024-07-21T08:59:49.4073716Z</DateCreated>
+    <DateFulfilled>0001-01-01T00:00:00</DateFulfilled>
+    <Fulfilled>false</Fulfilled>
+  </SerializedItem>
+</SerializedList>
