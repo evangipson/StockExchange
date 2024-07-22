@@ -9,6 +9,10 @@ using StockExchange.Domain.Models;
 
 namespace StockExchange.Logic.Repositories
 {
+	/// <summary>
+	/// An implementation of <see cref="SerializableRepository{SerializedType}"/>,
+	/// which will serialize and deserialize a <see cref="Company"/>.
+	/// </summary>
 	[Service(typeof(ISerializableRepository<Company>))]
 	public class CompanyRepository : SerializableRepository<Company>
 	{

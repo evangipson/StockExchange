@@ -9,6 +9,10 @@ using StockExchange.Domain.Models.Orders;
 
 namespace StockExchange.Logic.Repositories
 {
+	/// <summary>
+	/// An implementation of <see cref="SerializableRepository{SerializedType}"/>,
+	/// which will serialize and deserialize an <see cref="Order"/>.
+	/// </summary>
 	[Service(typeof(ISerializableRepository<Order>))]
 	public class OrderRepository : SerializableRepository<Order>
 	{

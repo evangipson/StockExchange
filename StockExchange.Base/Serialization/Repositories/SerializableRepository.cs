@@ -6,6 +6,7 @@ using StockExchange.Base.Serialization.Repositories.Interfaces;
 
 namespace StockExchange.Base.Serialization.Repositories
 {
+	/// <inheritdoc cref="ISerializableRepository{SerializedType}"/>
 	public abstract class SerializableRepository<SerializedType> : ISerializableRepository<SerializedType> where SerializedType : ISerializedEntity, new()
 	{
 		private readonly ILogger<SerializableRepository<SerializedType>> _logger;
@@ -18,8 +19,16 @@ namespace StockExchange.Base.Serialization.Repositories
 			_serializationService = serializationService;
 		}
 
+		/// <summary>
+		/// A path to the datasource which is used in serialization. Intended to
+		/// be set by the consumer of <see cref="SerializableRepository{SerializedType}"/>.
+		/// </summary>
 		protected abstract string? DatasourcePath { get; }
 
+		/// <summary>
+		/// A collection of <typeparamref name="SerializedType"/> which contains
+		/// all the entities to serialize.
+		/// </summary>
 		protected IEnumerable<SerializedType>? EntityList { get; private set; }
 
 		public virtual IEnumerable<SerializedType>? GetEntity(string? entityIdentifier = null)

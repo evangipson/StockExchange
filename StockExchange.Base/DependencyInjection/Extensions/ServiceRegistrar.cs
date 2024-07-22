@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
+
 using StockExchange.Base.DependencyInjection.Attributes;
 
 namespace StockExchange.Base.DependencyInjection.Extensions
@@ -24,6 +25,7 @@ namespace StockExchange.Base.DependencyInjection.Extensions
 		/// <param name="assembly">
 		/// The assembly to add services from.
 		/// </param>
+		/// <exception cref="ApplicationException"/>
 		public static void AddServicesFromAssembly(this IServiceCollection serviceCollection, Assembly? assembly)
 		{
 			if (assembly?.ExportedTypes == null)
@@ -62,6 +64,7 @@ namespace StockExchange.Base.DependencyInjection.Extensions
 		/// The concrete <see cref="Type"/> of the service to be
 		/// added to the <paramref name="serviceCollection"/>.
 		/// </param>
+		/// <exception cref="ApplicationException"/>
 		private static void AddService(this IServiceCollection serviceCollection, ServiceLifetime serviceLifetime, Type serviceInterface, Type serviceImplementation)
 		{
 			switch (serviceLifetime)

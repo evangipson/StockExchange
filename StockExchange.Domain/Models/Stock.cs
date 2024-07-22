@@ -1,9 +1,10 @@
 ﻿using System.Globalization;
 
-using StockExchange.Base.Serialization.Services.Interfaces;
-
 namespace StockExchange.Domain.Models
 {
+	/// <summary>
+	/// Represents a <see cref="Company"/> stock.
+	/// </summary>
 	public class Stock
 	{
 		public decimal Price { get; set; }

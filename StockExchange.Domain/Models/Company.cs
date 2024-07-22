@@ -3,6 +3,9 @@ using StockExchange.Base.Serialization.Models;
 
 namespace StockExchange.Domain.Models
 {
+	/// <summary>
+	/// Represents any company that has <see cref="Models.Stock"/>.
+	/// </summary>
 	public class Company : ISerializedEntity
 	{
 		public string Name { get; set; } = string.Empty;

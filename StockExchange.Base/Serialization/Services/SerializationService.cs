@@ -8,6 +8,7 @@ using StockExchange.Base.Serialization.Services.Interfaces;
 
 namespace StockExchange.Base.Serialization.Services
 {
+	/// <inheritdoc cref="ISerializationService{EntityType}"/>
 	[Service(typeof(ISerializationService<>))]
 	public class SerializationService<EntityType> : ISerializationService<EntityType> where EntityType : ISerializedEntity, new()
 	{
@@ -118,6 +119,13 @@ namespace StockExchange.Base.Serialization.Services
 			}
 		}
 
+		/// <summary>
+		/// Updates the in-memory entity list using the provided
+		/// <paramref name="entity"/>.
+		/// </summary>
+		/// <param name="entity">
+		/// The entity to add to the in-memory entity list.
+		/// </param>
 		private void UpdateInMemoryEntityList(EntityType entity)
 		{
 			var matchedEntity = _entityList.Entities.Find(entityListEntry => entityListEntry.Equals(entity));

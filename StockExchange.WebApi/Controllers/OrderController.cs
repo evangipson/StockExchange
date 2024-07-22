@@ -1,10 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
+using StockExchange.Domain.Models.Orders;
 using StockExchange.Logic.Factories.Interfaces;
 using StockExchange.Logic.Services.Interfaces;
 
 namespace StockExchange.WebApi.Controllers
 {
+	/// <summary>
+	/// The controller for the api which will get and set
+	/// all <see cref="Order"/> data.
+	/// </summary>
 	[ApiController]
 	[Route("/api/order")]
 	public class OrderController : Controller
@@ -20,9 +25,24 @@ namespace StockExchange.WebApi.Controllers
 			_orderService = orderService;
 		}
 
+		/// <summary>
+		/// Gets every <see cref="Order"/>.
+		/// </summary>
+		/// <returns>
+		/// A collection of every <see cref="Order"/>.
+		/// </returns>
 		[HttpGet(Name = "Order")]
 		public IActionResult GetOrderBook() => Ok(_orderService.GetOrderBook());
 
+		/// <summary>
+		/// Creates a new <see cref="Order"/>, and places
+		/// that <see cref="Order"/>.
+		/// </summary>
+		/// <returns>
+		/// The <see cref="Order"/> that was created and placed,
+		/// <see cref="StatusCodes.Status500InternalServerError"/>
+		/// otherwise.
+		/// </returns>
 		[HttpPost(Name = "Order")]
 		public IActionResult CreateOrder()
 		{
