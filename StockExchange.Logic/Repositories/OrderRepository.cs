@@ -21,5 +21,10 @@ namespace StockExchange.Logic.Repositories
 		}
 
 		protected override string? DatasourcePath => _resourceService.GetResourceFilePath("Orders.xml");
+
+		public override IEnumerable<Order>? FilterEntities(string? filter)
+		{
+			return EntityList?.Where(order => order.OrderId.ToString() == filter);
+		}
 	}
 }

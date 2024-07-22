@@ -22,6 +22,7 @@ namespace StockExchange.Base.Serialization.Services
 			_logger = logger;
 			_serializer = new XmlSerializer(typeof(SerializedList<EntityType>));
 			_typeName = typeof(EntityType).Name;
+			_entityList = new SerializedList<EntityType>([]);
 		}
 
 		public IEnumerable<EntityType>? GetAll(string? serializationFilePath)
@@ -38,7 +39,7 @@ namespace StockExchange.Base.Serialization.Services
 				return _entityList.Entities;
 			}
 
-			using (StreamReader streamReader = new StreamReader(serializationFilePath))
+			using (StreamReader streamReader = new(serializationFilePath))
 			{
 				if (streamReader == null)
 				{
@@ -46,7 +47,7 @@ namespace StockExchange.Base.Serialization.Services
 					return null;
 				}
 
-				using (StringReader stringReader = new StringReader(streamReader.ReadToEnd()))
+				using (StringReader stringReader = new(streamReader.ReadToEnd()))
 				{
 					_entityList = _serializer.Deserialize(stringReader) as SerializedList<EntityType>? ?? new SerializedList<EntityType>();
 					_logger.LogInformation($"{nameof(Get)}: Got every {_typeName.ToLower()} from file.");
@@ -76,14 +77,16 @@ namespace StockExchange.Base.Serialization.Services
 			});
 		}
 
-		// TODO: Figure out how to populate _entityList.Entities with XML before setting for the first time
 		public bool Set(EntityType entity, string? serializationFilePath)
 		{
 			if (string.IsNullOrEmpty(serializationFilePath))
 			{
-				_logger.LogInformation($"{nameof(Set)}: {_typeName} datasource file path not found. Can't set {_typeName.ToLower()}.");
+				_logger.LogInformation($"{nameof(Get)}: {_typeName} datasource file path not found. Can't set {_typeName.ToLower()}.");
 				return false;
 			}
+
+			// Ensure _entityList is in-memory via stored XML before setting anything
+			List<EntityType>? entities = GetAll(serializationFilePath)?.ToList() ?? [];
 
 			try
 			{
@@ -92,18 +95,7 @@ namespace StockExchange.Base.Serialization.Services
 				var xmlNamespace = new XmlSerializerNamespaces();
 				xmlNamespace.Add("", "");
 
-				var matchedEntity = _entityList.Entities.Find(entityListEntry => entityListEntry.Equals(entity));
-				if (matchedEntity == null)
-				{
-					_logger.LogInformation($"{nameof(Set)}: Couldn't find {_typeName.ToLower()} to update, creating a new entity in serialization.");
-					_entityList.Entities.Add(entity);
-				}
-				else
-				{
-					_logger.LogInformation($"{nameof(Set)}: Found {_typeName.ToLower()} to update.");
-					_entityList.Entities.Remove(matchedEntity);
-					_entityList.Entities.Add(entity);
-				}
+				UpdateInMemoryEntityList(entity);
 
 				using (XmlWriter writer = XmlWriter.Create(serializationFilePath, xmlSettings))
 				{
@@ -123,6 +115,22 @@ namespace StockExchange.Base.Serialization.Services
 			{
 				_logger.LogError($"{nameof(Set)}: Couldn't update {_typeName.ToLower()}.");
 				return false;
+			}
+		}
+
+		private void UpdateInMemoryEntityList(EntityType entity)
+		{
+			var matchedEntity = _entityList.Entities.Find(entityListEntry => entityListEntry.Equals(entity));
+			if (matchedEntity == null)
+			{
+				_logger.LogInformation($"{nameof(Set)}: Couldn't find {_typeName.ToLower()} to update, creating a new entity in serialization.");
+				_entityList.Entities.Add(entity);
+			}
+			else
+			{
+				_logger.LogInformation($"{nameof(Set)}: Found {_typeName.ToLower()} to update.");
+				_entityList.Entities.Remove(matchedEntity);
+				_entityList.Entities.Add(entity);
 			}
 		}
 	}

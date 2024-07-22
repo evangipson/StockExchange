@@ -36,26 +36,13 @@ namespace StockExchange.Base.Serialization.Repositories
 				return EntityList;
 			}
 
-			var filteredEntities = EntityList?.Where(entity =>
-			{
-				var entityProperties = typeof(SerializedType).GetProperties();
-				foreach (var property in entityProperties)
-				{
-					if (property.GetValue(entity)?.ToString() == entityIdentifier?.ToString())
-					{
-						return true;
-					}
-				}
-				return false;
-			});
-
+			var filteredEntities = FilterEntities(entityIdentifier);
 			if (filteredEntities?.Count() == 0)
 			{
-				_logger.LogError($"{nameof(GetEntity)}: No {_typeName.ToLower()} exists in memory.");
+				_logger.LogError($"{nameof(GetEntity)}: No \"{entityIdentifier}\" {_typeName.ToLower()} exists in memory.");
 				return null;
 			}
-
-			return EntityList;
+			return filteredEntities;
 		}
 
 		public virtual bool SetEntity(SerializedType entity)
@@ -68,5 +55,7 @@ namespace StockExchange.Base.Serialization.Repositories
 
 			return _serializationService.Set(entity, DatasourcePath);
 		}
+
+		public abstract IEnumerable<SerializedType>? FilterEntities(string? filter);
 	}
 }

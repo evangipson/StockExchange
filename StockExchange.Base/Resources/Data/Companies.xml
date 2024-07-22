@@ -9,6 +9,7 @@
 	<NetSales>1000000000</NetSales>
 	<Debt>50000000</Debt>
 	<NonOperatingItems>0</NonOperatingItems>
+	<EntityId>5698cd58-85a5-4e78-8bf5-e5a845d153d1</EntityId>
 	<Stock>
 	  <Open>125</Open>
 	  <Close>127</Close>
@@ -27,6 +28,7 @@
 	<NetSales>2000000000</NetSales>
 	<Debt>25000000</Debt>
 	<NonOperatingItems>1000000</NonOperatingItems>
+	<EntityId>38f16d14-e591-4144-8787-51b4abba644d</EntityId>
 	<Stock>
 	  <Open>135</Open>
 	  <Close>138</Close>

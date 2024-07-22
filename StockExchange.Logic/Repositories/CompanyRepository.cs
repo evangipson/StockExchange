@@ -21,5 +21,10 @@ namespace StockExchange.Logic.Repositories
 		}
 
 		protected override string? DatasourcePath => _resourceService.GetResourceFilePath("Companies.xml");
+
+		public override IEnumerable<Company>? FilterEntities(string? filter)
+		{
+			return EntityList?.Where(entity => entity.Name == filter || entity.TickerName == filter);
+		}
 	}
 }

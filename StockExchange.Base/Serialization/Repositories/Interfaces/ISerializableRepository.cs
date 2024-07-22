@@ -4,8 +4,10 @@ namespace StockExchange.Base.Serialization.Repositories.Interfaces
 {
 	public interface ISerializableRepository<SerializedType> where SerializedType : ISerializedEntity, new()
 	{
-		abstract IEnumerable<SerializedType>? GetEntity(string? entityIdentifier = null);
+		IEnumerable<SerializedType>? GetEntity(string? entityIdentifier = null);
 
-		abstract bool SetEntity(SerializedType entity);
+		bool SetEntity(SerializedType entity);
+
+		IEnumerable<SerializedType>? FilterEntities(string? filter);
 	}
 }

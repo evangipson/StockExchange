@@ -38,7 +38,7 @@ namespace StockExchange.Domain.Models
 
 		public string FileName => "Companies.xml";
 
-		public Guid EntityId => Guid.NewGuid();
+		public Guid EntityId { get; set; }
 
 		public override string ToString()
 		{
