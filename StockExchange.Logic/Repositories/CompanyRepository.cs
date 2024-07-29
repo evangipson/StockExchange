@@ -24,7 +24,7 @@ namespace StockExchange.Logic.Repositories
 			_resourceService = resourceService;
 		}
 
-		protected override string? DatasourcePath => _resourceService.GetResourceFilePath("Companies.xml");
+		protected override string? DatasourcePath => _resourceService.GetResourceFilePath("companies.save");
 
 		public override IEnumerable<Company>? FilterEntities(string? filter)
 		{

@@ -13,11 +13,13 @@ namespace StockExchange.WebApi.Controllers
 	[Route("/api/company")]
 	public class CompanyController : Controller
 	{
+		private readonly ILogger<CompanyController> _logger;
 		private readonly ISerializableRepository<Company> _companyRepository;
 
-		public CompanyController(ISerializableRepository<Company> companyRepository)
+		public CompanyController(ISerializableRepository<Company> companyRepository, ILogger<CompanyController> logger)
 		{
 			_companyRepository = companyRepository;
+			_logger = logger;
 		}
 
 		/// <summary>
@@ -36,6 +38,28 @@ namespace StockExchange.WebApi.Controllers
 			var matchingCompanies = _companyRepository.GetEntity(tickerName);
 
 			return matchingCompanies == null ? StatusCode(500) : Ok(matchingCompanies);
+		}
+
+		/// <summary>
+		/// Creates a new <see cref="Company"/>.
+		/// </summary>
+		/// <returns>
+		/// The <see cref="Company"/> that was created,
+		/// <see cref="StatusCodes.Status500InternalServerError"/>
+		/// otherwise.
+		/// </returns>
+		[HttpPost(Name = "Company")]
+		public IActionResult CreateCompany(Company? company)
+		{
+			if (company == null)
+			{
+				_logger.LogError($"{nameof(CreateCompany)}: Could not create company.");
+				return StatusCode(500);
+			}
+
+			_companyRepository.SetEntity(company);
+			_logger.LogInformation($"{nameof(CreateCompany)}: Created and saved company.");
+			return Ok(company);
 		}
 	}
 }

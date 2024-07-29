@@ -1,6 +1,5 @@
-﻿using System.Xml;
-using System.Xml.Serialization;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
+using Morph.Serializer;
 
 using StockExchange.Base.DependencyInjection.Attributes;
 using StockExchange.Base.Serialization.Models;
@@ -13,7 +12,6 @@ namespace StockExchange.Base.Serialization.Services
 	public class SerializationService<EntityType> : ISerializationService<EntityType> where EntityType : ISerializedEntity, new()
 	{
 		private readonly ILogger<SerializationService<EntityType>> _logger;
-		private readonly XmlSerializer _serializer;
 		private readonly string _typeName;
 
 		private SerializedList<EntityType> _entityList;
@@ -21,7 +19,6 @@ namespace StockExchange.Base.Serialization.Services
 		public SerializationService(ILogger<SerializationService<EntityType>> logger)
 		{
 			_logger = logger;
-			_serializer = new XmlSerializer(typeof(SerializedList<EntityType>));
 			_typeName = typeof(EntityType).Name;
 			_entityList = new SerializedList<EntityType>([]);
 		}
@@ -40,21 +37,20 @@ namespace StockExchange.Base.Serialization.Services
 				return _entityList.Entities;
 			}
 
-			using (StreamReader streamReader = new(serializationFilePath))
-			{
-				if (streamReader == null)
-				{
-					_logger.LogError($"{nameof(Get)}: Couldn't open file for reading, did not get the {_typeName.ToLower()}.");
-					return null;
-				}
+			SerializedList<EntityType> entityList = MorphSerializer.DeserializeStructFromFile<SerializedList<EntityType>>(serializationFilePath)
+				?? new SerializedList<EntityType>([]);
 
-				using (StringReader stringReader = new(streamReader.ReadToEnd()))
-				{
-					_entityList = _serializer.Deserialize(stringReader) as SerializedList<EntityType>? ?? new SerializedList<EntityType>();
-					_logger.LogInformation($"{nameof(Get)}: Got every {_typeName.ToLower()} from file.");
-				}
+			if (entityList.Entities.Count == 0)
+			{
+				_logger.LogWarning($"{nameof(Get)}: Couldn't deserialize contents of {serializationFilePath}, attempting to create new serialization file.");
+				CreateSerializationFile(serializationFilePath);
+			}
+			else
+			{
+				_logger.LogInformation($"{nameof(Get)}: Got every {_typeName.ToLower()} from file.");
 			}
 
+			_entityList = entityList;
 			return _entityList.Entities;
 		}
 
@@ -86,29 +82,16 @@ namespace StockExchange.Base.Serialization.Services
 				return false;
 			}
 
-			// Ensure _entityList is in-memory via stored XML before setting anything
+			// Ensure _entityList is in-memory via deserialization before setting anything
 			List<EntityType>? entities = GetAll(serializationFilePath)?.ToList() ?? [];
 
 			try
 			{
 				_logger.LogInformation($"{nameof(Set)}: Trying to update {_typeName.ToLower()}.");
-				var xmlSettings = new XmlWriterSettings { Indent = true, NewLineOnAttributes = true, OmitXmlDeclaration = true, WriteEndDocumentOnClose = true };
-				var xmlNamespace = new XmlSerializerNamespaces();
-				xmlNamespace.Add("", "");
-
 				UpdateInMemoryEntityList(entity);
 
-				using (XmlWriter writer = XmlWriter.Create(serializationFilePath, xmlSettings))
-				{
-					if (writer == null)
-					{
-						_logger.LogError($"{nameof(Get)}: Couldn't open file for reading, did not get the {_typeName.ToLower()}.");
-						return false;
-					}
-
-					_serializer.Serialize(writer, _entityList, xmlNamespace);
-					_logger.LogInformation($"{nameof(Set)}: Updated {_typeName.ToLower()}.");
-				}
+				_entityList.SerializeToFile(serializationFilePath);
+				_logger.LogInformation($"{nameof(Set)}: Updated {_typeName.ToLower()}.");
 
 				return true;
 			}
@@ -140,6 +123,28 @@ namespace StockExchange.Base.Serialization.Services
 				_entityList.Entities.Remove(matchedEntity);
 				_entityList.Entities.Add(entity);
 			}
+		}
+
+		/// <summary>
+		/// Creates a serialization file if one does not exist.
+		/// <para>
+		/// Does nothing if <paramref name="serializationFilePath"/>
+		/// is <c>null</c> or empty.
+		/// </para>
+		/// </summary>
+		/// <param name="serializationFilePath">
+		/// A required parameter which contains a path to the file
+		/// that will be created.
+		/// </param>
+		private void CreateSerializationFile(string serializationFilePath)
+		{
+			if(!File.Exists(serializationFilePath))
+			{
+				File.Create(serializationFilePath);
+				_logger.LogInformation($"{nameof(CreateSerializationFile)}: Created serialization file \"{serializationFilePath}\", because it could not be found.");
+				return;
+			}
+			_logger.LogInformation($"{nameof(CreateSerializationFile)}: Serialization file \"{serializationFilePath}\", already exists, so it was not created.");
 		}
 	}
 }

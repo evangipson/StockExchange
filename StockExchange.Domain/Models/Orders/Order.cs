@@ -26,7 +26,7 @@ namespace StockExchange.Domain.Models.Orders
 		// ISerializedEntity properties
 		public string ElementName => "Order";
 
-		public string FileName => "Orders.xml";
+		public string FileName => "orders.save";
 
 		public Guid EntityId => Guid.NewGuid();
 	}

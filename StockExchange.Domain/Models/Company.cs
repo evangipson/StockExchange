@@ -39,7 +39,7 @@ namespace StockExchange.Domain.Models
 		// ISerializedEntity properties
 		public string ElementName => "Company";
 
-		public string FileName => "Companies.xml";
+		public string FileName => "companies.save";
 
 		public Guid EntityId { get; set; }
 

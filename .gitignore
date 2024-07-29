@@ -3,6 +3,9 @@
 ##
 ## Get latest from `dotnet new gitignore`
 
+# .save files for serialization
+*.save
+
 # dotenv files
 .env
 
