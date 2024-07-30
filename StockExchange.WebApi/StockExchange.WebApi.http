@@ -6,3 +6,6 @@ Accept: application/json
 GET {{StockExchange.WebApi_HostAddress}}/api/order/
 Accept: application/json
 ###
+GET {{StockExchange.WebApi_HostAddress}}/api/crypto/
+Accept: application/json
+###
