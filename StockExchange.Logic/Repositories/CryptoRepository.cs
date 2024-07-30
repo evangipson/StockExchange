@@ -9,11 +9,11 @@ using StockExchange.Domain.Models;
 
 namespace StockExchange.Logic.Repositories
 {
-    /// <summary>
-    /// An implementation of <see cref="SerializableRepository{SerializedType}"/>,
-    /// which will serialize and deserialize a <see cref="Cryptocurrency"/>.
-    /// </summary>
-    [Service(typeof(ISerializableRepository<Cryptocurrency>))]
+	/// <summary>
+	/// An implementation of <see cref="SerializableRepository{SerializedType}"/>,
+	/// which will serialize and deserialize a <see cref="Cryptocurrency"/>.
+	/// </summary>
+	[Service(typeof(ISerializableRepository<Cryptocurrency>))]
 	public class CryptoRepository : SerializableRepository<Cryptocurrency>
 	{
 		private readonly IResourceService _resourceService;
