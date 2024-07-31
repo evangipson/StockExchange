@@ -2,15 +2,22 @@
 using StockExchange.Domain.Models.Orders;
 using StockExchange.Domain.Models.Actors;
 using StockExchange.Logic.Services.Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace StockExchange.Logic.Services
 {
 	[Service(typeof(IBrokerService))]
 	public class BrokerService : IBrokerService
 	{
+		private readonly ILogger<BrokerService> _logger;
 		private readonly int buyingThreshold = 10;
 
-		public bool ShouldBuy(Order order)
+        public BrokerService(ILogger<BrokerService> logger)
+        {
+			_logger = logger;
+        }
+
+        public bool ShouldBuy(Order order)
 		{
 			var brokerFromOrder = GetBrokerFromOrder(order);
 			if (brokerFromOrder == null || brokerFromOrder != order.Buyer)
@@ -20,6 +27,9 @@ namespace StockExchange.Logic.Services
 
 			var brokerTendency = GetBrokerTransactionTendency(brokerFromOrder);
 			var upside = order.Stock?.Close - order.Stock?.Price;
+
+			_logger.LogInformation($"{nameof(ShouldBuy)}: broker tendency for buy threshold = {brokerTendency}");
+			_logger.LogInformation($"{nameof(ShouldBuy)}: upside for buy threshold = {upside}");
 
 			return brokerTendency + upside > buyingThreshold;
 		}
@@ -34,6 +44,9 @@ namespace StockExchange.Logic.Services
 
 			var brokerTendency = GetBrokerTransactionTendency(brokerFromOrder);
 			var upside = order.Stock?.Price - order.Stock?.Close;
+
+			_logger.LogInformation($"{nameof(ShouldSell)}: broker tendency for buy threshold = {brokerTendency}");
+			_logger.LogInformation($"{nameof(ShouldSell)}: upside for buy threshold = {upside}");
 
 			return brokerTendency + upside > buyingThreshold;
 		}
@@ -57,11 +70,11 @@ namespace StockExchange.Logic.Services
 			var buyingChance = 0;
 			if (broker.Behaviors.Contains(BrokerBehavior.Aggressive))
 			{
-				buyingChance += 10;
+				buyingChance += buyingThreshold;
 			}
 			if (broker.Behaviors.Contains(BrokerBehavior.Safe))
 			{
-				buyingChance -= 5;
+				buyingChance -= buyingThreshold / 2;
 			}
 
 			return buyingChance;

@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 
 using StockExchange.Base.DependencyInjection.Attributes;
+using StockExchange.Domain.Models;
 using StockExchange.Domain.Models.Actors;
 using StockExchange.Domain.Models.Orders;
 using StockExchange.Logic.Factories.Interfaces;
@@ -18,7 +19,7 @@ namespace StockExchange.Logic.Factories
 			_logger = logger;
 		}
 
-		public Order? CreateOrder(Actor? buyer, Actor? seller)
+		public Order? CreateOrder(Actor? buyer, Actor? seller, Stock? stock)
 		{
 			_logger.LogInformation($"{nameof(CreateOrder)}: Creating order.");
 
@@ -35,6 +36,10 @@ namespace StockExchange.Logic.Factories
 			if (seller != null)
 			{
 				newOrder.Seller = seller;
+			}
+			if (stock != null)
+			{
+				newOrder.Stock = stock;
 			}
 
 			return newOrder;

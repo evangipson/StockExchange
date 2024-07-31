@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
 using StockExchange.Base.Serialization.Repositories.Interfaces;
+using StockExchange.Domain.Models;
 using StockExchange.Domain.Models.Actors;
 using StockExchange.Domain.Models.Orders;
 using StockExchange.Logic.Factories.Interfaces;
@@ -20,13 +21,20 @@ namespace StockExchange.WebApi.Controllers
 		private readonly IOrderFactory _orderFactory;
 		private readonly IOrderService _orderService;
 		private readonly ISerializableRepository<Broker> _brokerRepository;
+		private readonly ISerializableRepository<Company> _companyRepository;
 
-		public OrderController(ILogger<OrderController> logger, IOrderFactory orderFactory, IOrderService orderService, ISerializableRepository<Broker> brokerRepository)
-		{
+		public OrderController(
+			ILogger<OrderController> logger,
+			IOrderFactory orderFactory,
+			IOrderService orderService,
+			ISerializableRepository<Broker> brokerRepository,
+			ISerializableRepository<Company> companyRepository
+		){
 			_logger = logger;
 			_orderFactory = orderFactory;
 			_orderService = orderService;
 			_brokerRepository = brokerRepository;
+			_companyRepository = companyRepository;
 		}
 
 		/// <summary>
@@ -52,7 +60,8 @@ namespace StockExchange.WebApi.Controllers
 		{
 			var buyer = _brokerRepository.GetEntity("I-Trade")?.FirstOrDefault();
 			var seller = _brokerRepository.GetEntity("Findelity")?.FirstOrDefault();
-			var order = _orderFactory.CreateOrder(buyer, seller);
+			var stock = _companyRepository.GetEntity("Michaelsoft")?.FirstOrDefault()?.Stock;
+			var order = _orderFactory.CreateOrder(buyer, seller, stock);
 			if (order == null)
 			{
 				_logger.LogError($"{nameof(CreateOrder)}: Could not create order.");
