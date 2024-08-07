@@ -2,8 +2,8 @@
 
 namespace StockExchange.Logic.Services.Interfaces
 {
-	public interface IBrokerService
-	{
+	public interface IBrokerService : IObserver<Order>
+    {
 		bool ShouldBuy(Order order);
 
 		bool ShouldSell(Order order);

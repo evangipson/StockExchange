@@ -1,8 +1,9 @@
-﻿using StockExchange.Base.DependencyInjection.Attributes;
+﻿using Microsoft.Extensions.Logging;
+
+using StockExchange.Base.DependencyInjection.Attributes;
 using StockExchange.Domain.Models.Orders;
 using StockExchange.Domain.Models.Actors;
 using StockExchange.Logic.Services.Interfaces;
-using Microsoft.Extensions.Logging;
 
 namespace StockExchange.Logic.Services
 {
@@ -11,13 +12,54 @@ namespace StockExchange.Logic.Services
 	{
 		private readonly ILogger<BrokerService> _logger;
 		private readonly int buyingThreshold = 10;
+		private readonly Random _random = new();
 
-        public BrokerService(ILogger<BrokerService> logger)
-        {
+		private IDisposable? _unsubscriber;
+		private bool first = false;
+		private Order? last;
+
+		public BrokerService(ILogger<BrokerService> logger)
+		{
 			_logger = logger;
-        }
+		}
 
-        public bool ShouldBuy(Order order)
+		public virtual void Subscribe(IObservable<Order> provider)
+		{
+			_unsubscriber = provider.Subscribe(this);
+		}
+
+		public virtual void Unsubscribe()
+		{
+			_unsubscriber?.Dispose();
+		}
+
+		public virtual void OnCompleted()
+		{
+			_logger.LogInformation($"{nameof(OnCompleted)}: Additional order data will not be transmitted.");
+		}
+
+		public virtual void OnError(Exception error)
+		{
+			// Do nothing.
+		}
+
+		public virtual void OnNext(Order order)
+		{
+			_logger.LogInformation($"{nameof(OnNext)}: Order being evaluated by broker.");
+			// base the amount of time they wait off of the broker's behavior
+			Thread.Sleep(_random.Next(500, 2500));
+
+			if (first)
+			{
+				last = order;
+				first = false;
+				return;
+			}
+
+			_logger.LogInformation($"{nameof(OnNext)}: Order update being evaluated by broker.");
+		}
+
+		public bool ShouldBuy(Order order)
 		{
 			var brokerFromOrder = GetBrokerFromOrder(order);
 			if (brokerFromOrder == null || brokerFromOrder != order.Buyer)

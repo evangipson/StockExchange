@@ -3,6 +3,7 @@
 using StockExchange.Base.DependencyInjection.Attributes;
 using StockExchange.Base.Serialization.Repositories.Interfaces;
 using StockExchange.Domain.Models.Orders;
+using StockExchange.Domain.Models.Events;
 using StockExchange.Logic.Services.Interfaces;
 
 namespace StockExchange.Logic.Services
@@ -14,11 +15,26 @@ namespace StockExchange.Logic.Services
 		private readonly ISerializableRepository<Order> _orderRepository;
 		private readonly IBrokerService _brokerService;
 
+		private readonly List<IObserver<Order>> _observers;
+
 		public OrderService(ILogger<OrderService> logger, ISerializableRepository<Order> orderRepository, IBrokerService brokerService)
 		{
 			_logger = logger;
 			_orderRepository = orderRepository;
 			_brokerService = brokerService;
+			_observers = [];
+
+			Subscribe(brokerService);
+		}
+
+		public virtual IDisposable Subscribe(IObserver<Order> observer)
+		{
+			if (!_observers.Contains(observer))
+			{
+				_observers.Add(observer);
+			}
+
+			return new IUnsubscriber<Order>.Unsubscriber(_observers, observer);
 		}
 
 		public IEnumerable<Order>? GetOrderBook() => _orderRepository.GetEntity();
@@ -37,6 +53,10 @@ namespace StockExchange.Logic.Services
 			_logger.LogInformation($"{nameof(PlaceOrder)}: broker would buy - {brokerBuyingChance}, broker would sell - {brokerSellingChance}");
 
 			_orderRepository.SetEntity(order);
+
+			_logger.LogInformation($"{nameof(PlaceOrder)}: Notifying all observers that an order has been placed.");
+			_observers.ForEach(observer => observer.OnNext(order));
+
 			return true;
 		}
 

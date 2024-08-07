@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+
 using StockExchange.Base.Serialization.Repositories.Interfaces;
-using StockExchange.Domain.Models;
 using StockExchange.Domain.Models.Actors;
 
 namespace StockExchange.WebApi.Controllers
@@ -35,9 +35,9 @@ namespace StockExchange.WebApi.Controllers
 		[HttpGet(Name = "Broker")]
 		public IActionResult GetAllBrokerData(string? brokerName)
 		{
-			var matchingCryptocurrencies = _brokerRepository.GetEntity(brokerName);
+			var matchingBrokers = _brokerRepository.GetEntity(brokerName);
 
-			return matchingCryptocurrencies == null ? StatusCode(500) : Ok(matchingCryptocurrencies);
+			return matchingBrokers == null ? StatusCode(500) : Ok(matchingBrokers);
 		}
 
 		/// <summary>
