@@ -1,0 +1,70 @@
+:root {
+  --font-big: 48px;
+  --font-medium: 32px;
+  --font-small: 18px;
+  --color-positive: rgb(0, 200, 5);
+  --color-positive-transparent: rgba(0, 200, 5, 0.14);
+  --color-negative: rgb(255, 80, 0);
+  --color-negative-transparent: rgba(255, 80, 0, 0.14);
+}
+
+body {
+  background-color: #131313;
+  color: #dedede;
+  font-size: var(--font-medium);
+}
+
+p, h1, h2, h3, h4 {
+  margin: 0;
+}
+
+.stock-exchange {
+  font-size: 18px;
+  font-family: monospace;
+  font-weight: bold;
+}
+
+.stock-exchange--positive {
+  color: var(--color-positive);
+}
+
+.stock-exchange--negative {
+  color: var(--color-negative);
+}
+
+.stock-exchange__company-name {
+  font-size: var(--font-big);
+}
+.stock-exchange__company-stock-value {
+  font-size: var(--font-medium);
+}
+
+.stock-exchange__graph-data {
+  display: flex;
+  flex-flow: column nowrap;
+  max-height: 400px;
+}
+.stock-exchange__graph-canvas {
+  max-width: 1200px;
+  width: 100%;
+}
+.stock-exchange__graph-period {
+  display: flex;
+  flex-flow: row;
+  gap: 16px;
+  list-style-type: none;
+}
+.stock-exchange__graph-period li {
+  transition: color 0.33s ease-in-out;
+  margin-bottom: 8px;
+}
+.stock-exchange__graph-period li:hover {
+  cursor: pointer;
+  color: var(--color-positive);
+}
+.stock-exchange__graph-period-item--active {
+  color: var(--color-positive);
+  border-bottom: 3px solid var(--color-positive);
+}
+
+/*# sourceMappingURL=main.css.map */

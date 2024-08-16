@@ -1,0 +1,23 @@
+body {
+    background-color: #131313;
+    color: #dedede;
+    font-size: var(--font-medium);
+}
+
+p, h1, h2, h3, h4 {
+    margin: 0;
+}
+
+.stock-exchange {
+    font-size: 18px;
+    font-family: monospace;
+    font-weight: bold;
+}
+
+.stock-exchange--positive {
+    color: var(--color-positive);
+}
+
+.stock-exchange--negative {
+    color: var(--color-negative);
+}

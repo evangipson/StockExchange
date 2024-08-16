@@ -1,0 +1,9 @@
+.stock-exchange__company {
+    &-name {
+        font-size: var(--font-big);
+    }
+
+    &-stock-value {
+        font-size: var(--font-medium);
+    }
+}

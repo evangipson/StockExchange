@@ -1,0 +1,11 @@
+﻿:root {
+	--font-size: 18px;
+	--background-color: #131313;
+	--color: #dcdcdc;
+}
+
+body {
+	font-size: var(--font-size);
+	background-color: var(--background-color);
+	color: var(--color);
+}

@@ -1,0 +1,13 @@
+﻿.stock-exchange__content-block {
+	display: flex;
+	flex-flow: row;
+}
+
+.stock-exchange__content-block > *:empty {
+	display: none;
+}
+
+.stock-exchange__content-block > * {
+	display: flex;
+	flex-basis: 50%;
+}

@@ -1,0 +1,34 @@
+.stock-exchange__graph {
+    &-data {
+        display: flex;
+        flex-flow: column nowrap;
+        max-height: 400px;
+    }
+
+    &-canvas {
+        max-width: $screen-widescreen;
+        width: 100%;
+    }
+
+    &-period {
+        display: flex;
+        flex-flow: row;
+        gap: 16px;
+        list-style-type: none;
+    }
+
+    &-period li {
+        transition: color 0.33s ease-in-out;
+        margin-bottom: 8px;
+    }
+
+    &-period li:hover {
+        cursor: pointer;
+        color: var(--color-positive);
+    }
+
+    &-period-item--active {
+        color: var(--color-positive);
+        border-bottom: 3px solid var(--color-positive);
+    }
+}

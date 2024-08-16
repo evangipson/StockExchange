@@ -1,0 +1,15 @@
+﻿.stock-exchange__navigation {
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: space-between;
+}
+
+.stock-exchange__navigation-logo {
+	display: block;
+}
+
+.stock-exchange__navigation-links {
+	display: flex;
+	flex-flow: row wrap;
+	column-gap: 16px;
+}

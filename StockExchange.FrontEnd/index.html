@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <link rel='stylesheet' href='assets/main.css'>
+    <title>Stock Exchange</title>
+</head>
+
+<body>
+    <div class='stock-exchange'>
+        <div class='stock-exchange__two-column'>
+            <div class='stock-exchange__primary'>
+                <div class='stock-exchange__graph'>
+                    <div class='stock-exchange__company'>
+                        <p class='stock-exchange__company-name'></p>
+                        <p class='stock-exchange__company-stock-value'></p>
+                        <p class='stock-exchange__company-stock-change'></p>
+                        <p class='stock-exchange__company-stock-after-hours'></p>
+                    </div>
+                    <div class='stock-exchange__graph-data'>
+                        <canvas class='stock-exchange__graph-canvas'></canvas>
+                        <ul class='stock-exchange__graph-period'></ul>
+                    </div>
+                </div>
+            </div>
+            <div class='stock-exchange__secondary'>
+            </div>
+        </div>
+    </div>
+    <script type='module' src='assets/js/main.js'></script>
+</body>
+
+</html>
