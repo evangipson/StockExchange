@@ -33,18 +33,17 @@ export class RealTimeGraph {
      */
     updateGraph(company, daysToShow = 1) {
         let filteredCompanyData = company.getDataForDays(daysToShow);
+        const xMin = 0;
+
         if (filteredCompanyData.length > GraphConstants.maxGraphNodes) {
             filteredCompanyData = company.getAverageDataInChunks(daysToShow);
         }
-        const sortedFilteredCompanyData = filteredCompanyData.toSorted((a, b) => a.Price - b.Price);
-
-        const xMin = 0;
+        
+        const yMin = 0;
+        const yMax = filteredCompanyData.toSorted((a, b) => b.Price - a.Price)[0].Price;
         const xMax = filteredCompanyData.length;
-        const yMin = sortedFilteredCompanyData[0].Price;
-        const yMax = sortedFilteredCompanyData[sortedFilteredCompanyData.length - 1].Price;
         this.#xScale = (this.#canvas.width / (xMax - xMin));
         this.#yScale = (this.#canvas.height / (yMax - yMin));
-
         this.#canvasContext.scale(this.#xScale, this.#yScale);
 
         // Set fill style
@@ -81,33 +80,33 @@ export class RealTimeGraph {
 
         // Draw "filled" area below graph
         this.#canvasContext.beginPath();
-        this.#canvasContext.moveTo(0, this.#canvas.height);
+        this.#canvasContext.moveTo(0, this.#canvas.height - filteredCompanyData[0].Price);
         [...filteredCompanyData].forEach((data, index) => {
             this.#canvasContext.lineTo(index, yMax - data.Price);
         });
-        this.#canvasContext.lineTo(this.#canvas.width, yMax);
+        this.#canvasContext.lineTo(filteredCompanyData.length - 1, yMax);
         this.#canvasContext.fill();
 
-        this.#canvas.addEventListener('mousemove', (event) => {
-            let rect = this.#canvas.getBoundingClientRect(),
-                x = event.clientX - rect.left,
-                y = event.clientY - rect.top;
-            const nearestPointIndex = [...filteredCompanyData].find((data, index) => {
-                return index + x >= 1;
-            });
+        // this.#canvas.addEventListener('mousemove', (event) => {
+        //     let rect = this.#canvas.getBoundingClientRect(),
+        //         x = event.clientX - rect.left,
+        //         y = event.clientY - rect.top;
+        //     const nearestPointIndex = [...filteredCompanyData].find((data, index) => {
+        //         return index + x >= 1;
+        //     });
 
-            if(!nearestPointIndex) {
-                return;
-            }
+        //     if(!nearestPointIndex) {
+        //         return;
+        //     }
 
-            if(this.#canvasContext.isPointInPath(x, y)) {
-                console.info('point in path');
-                this.#canvasContext.beginPath();
-                this.#canvasContext.moveTo(x, yMax - nearestPointIndex.Price);
-                this.#canvasContext.arc(x, yMax - nearestPointIndex.Price, 1, 0, Math.PI * 1);
-                this.#canvasContext.fill();
-                this.#canvasContext.closePath();
-            }
-        });
+        //     if(this.#canvasContext.isPointInPath(x, y)) {
+        //         console.info('point in path');
+        //         this.#canvasContext.beginPath();
+        //         this.#canvasContext.moveTo(x, yMax - nearestPointIndex.Price);
+        //         this.#canvasContext.arc(x, yMax - nearestPointIndex.Price, 1, 0, Math.PI * 1);
+        //         this.#canvasContext.fill();
+        //         this.#canvasContext.closePath();
+        //     }
+        // });
     }
 }

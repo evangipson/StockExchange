@@ -113,6 +113,8 @@ const updateCompanyData = (company, daysToShow = 1) => {
     companyChange.classList.toggle('stock-exchange--negative', !valueIncreased);
     companyAfterHours.classList.toggle('stock-exchange--positive', company.StockAfterHours > 0.0);
     companyAfterHours.classList.toggle('stock-exchange--negative', company.StockAfterHours < 0.0);
+
+    // add data-text or w/e from the list items as ::after? or maybe just supplement innerText...
 };
 
 const drawCompanyGraph = (company, daysToShow = 1) => {

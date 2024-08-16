@@ -43,6 +43,7 @@ p, h1, h2, h3, h4 {
   display: flex;
   flex-flow: column nowrap;
   max-height: 400px;
+  padding: 16px;
 }
 .stock-exchange__graph-canvas {
   max-width: 1200px;

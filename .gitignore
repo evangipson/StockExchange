@@ -485,3 +485,9 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+# package lock files from front end
+**/package-lock.json
+
+# main.css generated sass from front end
+**/assets/*.css*

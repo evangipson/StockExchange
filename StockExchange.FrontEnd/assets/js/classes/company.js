@@ -72,7 +72,7 @@ export class Company {
         this.#name = name;
         this.#historicalData = data ?? getMockCompanyPriceData();
         this.#stockAfterHours = coinFlip() ? Math.random() * 5 : Math.random() * -5;
-        this.#dataByPrice = this.#historicalData.toSorted((a, b) => a.Price - b.Price);
+        this.#dataByPrice = this.#historicalData.toSorted((a, b) => b.Price - a.Price);
         this.#dataByDate = this.#historicalData.toSorted((a, b) => a.Date - b.Date);
     }
 
@@ -109,17 +109,9 @@ export class Company {
     getAverageDataInChunks(daysToShow = 1) {
         const filteredDayData = this.getDataForDays(daysToShow);
         const chunksOfDays = chunk(filteredDayData, filteredDayData.length / GraphConstants.maxGraphNodes);
-        const averagedChunks = chunksOfDays.map(chunk => {
-            const averagePrice = average(chunk.map(item => item.Price));
-            let dateTotal = 0;
-            chunk.forEach(item => {
-                dateTotal += item.Date.getTime();
-            });
-            dateTotal = dateTotal / chunk.length;
-            const averageDate = new Date();
-            averageDate.setTime(dateTotal);
-
-            return new CompanyPriceData(new Date(averageDate), averagePrice);
+        const averagedChunks = chunksOfDays.map((chunk, index) => {
+            const chunkToTake = index === 0 ? 0 : chunk.length - 1;
+            return new CompanyPriceData(chunk[chunkToTake].Date, chunk[chunkToTake].Price);
         });
         return averagedChunks;
     }
@@ -128,7 +120,7 @@ export class Company {
         const dateOffset = (24*60*60*1000) * daysAmount;
         const now = new Date();
         now.setTime(now.getTime() - dateOffset);
-        return this.#dataByDate.filter(data => data.Date.getTime() >= now.getTime());
+        return this.#dataByDate.filter(data => data.Date.getTime() > now.getTime());
     }
 
     getStockChangeByDays(dayAmount = 1) {
@@ -138,17 +130,17 @@ export class Company {
 
     getStockChangeByWeeks(weekAmount = 1) {
         const thisWeeksValues = this.getDataForDays(weekAmount * 7).sort(data => data.Price);
-        return thisWeeksValues[0].Price - thisWeeksValues[thisWeeksValues.length - 1].Price;
+        return thisWeeksValues[thisWeeksValues.length - 1].Price - thisWeeksValues[0].Price;
     }
 
     getStockChangeByMonths(monthAmount = 1) {
         const thisMonthsValues = this.getDataForDays(monthAmount * 29).sort(data => data.Price);
-        return thisMonthsValues[0].Price - thisMonthsValues[thisMonthsValues.length - 1].Price;
+        return thisMonthsValues[thisMonthsValues.length - 1].Price - thisMonthsValues[0].Price;
     }
 
     getStockChangeByYears(yearAmount = 1) {
         const thisYearsValues = this.getDataForDays(yearAmount * 365).sort(data => data.Price);
-        return thisYearsValues[0].Price - thisYearsValues[thisYearsValues.length - 1].Price;
+        return thisYearsValues[thisYearsValues.length - 1].Price - thisYearsValues[0].Price;
     }
 
     get StockAfterHours() {
