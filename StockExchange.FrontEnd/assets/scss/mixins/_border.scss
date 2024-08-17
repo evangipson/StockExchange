@@ -1,0 +1,9 @@
+@mixin border($borderColor: var(--color-background-lighter), $borderWidth: var(--default-border-width)) {
+    box-sizing: border-box;
+    border: $borderWidth solid $borderColor;
+}
+
+@mixin top-border($borderColor: var(--color-background-lighter), $borderWidth: var(--default-border-width)) {
+    box-sizing: border-box;
+    border-top: $borderWidth solid $borderColor;
+}
