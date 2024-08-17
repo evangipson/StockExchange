@@ -1,5 +1,6 @@
 import { formatAsCurrency } from "../utils/currencyUtils.js";
 import { getDaysFromYearStart } from "../utils/dateUtils.js";
+import { toggleLoader } from "../utils/loadingUtils.js";
 import { fetchCompanyData } from "../api/companyApi.js";
 import { Company } from "../classes/company.js";
 import { Graph } from "../classes/graph.js";
@@ -8,7 +9,7 @@ let companyGraph;
 
 const updateGraphPeriod = (company, graphPeriods, clickedPeriod) => {
     const companyChangeTime = document.querySelector('.stock-exchange__company-stock-change-time');
-    const daysOfData = clickedPeriod.getAttribute('data-days');
+    const daysOfData = clickedPeriod.getAttribute('data-days') ?? 1;
     const stockChangeMessage = clickedPeriod.getAttribute('data-stock-change');
 
     graphPeriods.forEach(clickedPeriod => clickedPeriod.classList.remove('stock-exchange__graph-period-item--active'));
@@ -27,20 +28,27 @@ const createGraphPeriods = (company) => {
         { days: (29 * 3), message: 'Past 3 months', listText: '3M' },
         { days: getDaysFromYearStart(), message: `Past ${getDaysFromYearStart()} days`, listText: 'YTD'},
         { days: 364, message: 'Past year', listText: '1Y' },
-        { days: (364 * 3), message: 'Past 5 years', listText: '3Y' },
+        { days: (364 * 3), message: 'Past 3 years', listText: '3Y' },
         { days: (364 * 5), message: 'Past 5 years', listText: '5Y' },
     ];
     const graphPeriods = [];
 
     graphPeriodList.innerHTML = '';
-    periods.forEach(period => {
+    for(const period in periods) {
+        const currentPeriod = periods[period];
+
+        if(company.DaysOfData < currentPeriod.days) {
+            break;
+        }
+        
         const graphPeriodElement = document.createElement('LI');
-        graphPeriodElement.setAttribute('data-days', period.days);
-        graphPeriodElement.setAttribute('data-stock-change', period.message);
-        graphPeriodElement.innerText = period.listText;
+        graphPeriodElement.setAttribute('data-days', currentPeriod.days);
+        graphPeriodElement.setAttribute('data-stock-change', currentPeriod.message);
+        graphPeriodElement.innerText = currentPeriod.listText;
         graphPeriods.push(graphPeriodElement);
-    });
-    graphPeriods.forEach((period, index) => {
+    }
+
+    graphPeriods.forEach((period) => {
         period.addEventListener('click', () => updateGraphPeriod(company, graphPeriods, period));
         graphPeriodList.appendChild(period);
     });
@@ -50,10 +58,48 @@ const createGraphPeriods = (company) => {
 
 const toggleCompanyPageLoaders = () => {
     const companyPageAsyncElements = document.querySelectorAll('.stock-exchange__graph-data, .stock-exchange__transaction-window');
-    companyPageAsyncElements.forEach(asyncElement => {
-        const asyncElementIsLoading = Boolean(asyncElement.classList.contains('stock-exchange--loading'));
-        asyncElement.classList.toggle('stock-exchange--loading', !asyncElementIsLoading);
-    });
+    companyPageAsyncElements.forEach(asyncElement => toggleLoader(asyncElement));
+};
+
+/**
+ * 
+ * @param {Company} company 
+ * @param {Number} daysToShow 
+ */
+const updateCompanyData = (company, daysToShow = 1) => {
+    const companyName = document.querySelector('.stock-exchange__company-name');
+    const companyValue = document.querySelector('.stock-exchange__company-stock-value');
+    const transactionWindowValue = document.querySelector('.stock-exchange__transaction-company-price');
+    const companyChange = document.querySelector('.stock-exchange__company-stock-change-value');
+    const companyAfterHours = document.querySelector('.stock-exchange__company-after-hours');
+    const stockChange = company.getStockChangeByDays(daysToShow);
+    const stockChangeIncreased = stockChange > 0.0;
+    const showingOneDayOfData = daysToShow == 1;
+    
+    companyName.innerText = company.Name;
+    companyValue.innerText = formatAsCurrency(company.StockValue);
+    transactionWindowValue.innerText = formatAsCurrency(company.StockValue);
+    companyChange.innerText = formatAsCurrency(stockChange, stockChangeIncreased);
+    companyChange.classList.toggle('stock-exchange--positive', stockChangeIncreased);
+    companyChange.classList.toggle('stock-exchange--negative', !stockChangeIncreased);
+    companyAfterHours.classList.toggle('stock-exchange__company-after-hours--active', showingOneDayOfData);
+
+    if(showingOneDayOfData) {
+        const companyAfterHoursValue = companyAfterHours.querySelector('.stock-exchange__company-after-hours-value');
+        const companyAfterHoursTime = companyAfterHours.querySelector('.stock-exchange__company-after-hours-time');
+        const afterHoursIncreased = company.StockAfterHours > 0.0;
+
+        companyAfterHoursValue.innerText = formatAsCurrency(company.StockAfterHours, afterHoursIncreased);
+        companyAfterHoursTime.innerText = 'after hours';
+        companyAfterHoursValue.classList.toggle('stock-exchange--positive', afterHoursIncreased);
+        companyAfterHoursValue.classList.toggle('stock-exchange--negative', !afterHoursIncreased);
+    }
+};
+
+const drawCompanyGraph = (company, daysToShow = 1) => {
+    const graphCanvas = document.querySelector('.stock-exchange__graph-canvas');
+    const newCompanyGraph = companyGraph || new Graph(graphCanvas);
+    newCompanyGraph.updateGraph(company, daysToShow);
 };
 
 const showCompanyData = async () => {
@@ -65,40 +111,6 @@ const showCompanyData = async () => {
 
     toggleCompanyPageLoaders();
     return company;
-};
-
-/**
- * 
- * @param {Company} company 
- * @param {Number} daysToShow 
- */
-const updateCompanyData = (company, daysToShow = 1) => {
-    const companyValue = document.querySelector('.stock-exchange__company-stock-value');
-    const transactionWindowValue = document.querySelector('.stock-exchange__transaction-company-price');
-    const companyChange = document.querySelector('.stock-exchange__company-stock-change-value');
-    const companyAfterHours = document.querySelector('.stock-exchange__company-after-hours-value');
-    const companyAfterHoursTime = document.querySelector('.stock-exchange__company-after-hours-time');
-    const stockChange = company.getStockChangeByDays(daysToShow);
-    const afterHoursIncreased = company.StockAfterHours > 0.0;
-    const stockChangeIncreased = stockChange > 0.0;
-    
-    document.querySelector('.stock-exchange__company-name').innerText = company.Name;
-    companyValue.innerText = formatAsCurrency(company.StockValue);
-    transactionWindowValue.innerText = formatAsCurrency(company.StockValue);
-    companyChange.innerText = formatAsCurrency(stockChange, stockChangeIncreased);
-    companyAfterHours.innerText = formatAsCurrency(company.StockAfterHours, afterHoursIncreased);
-    companyAfterHoursTime.innerText = 'after hours';
-
-    companyChange.parentElement.classList.toggle('stock-exchange--positive', stockChangeIncreased);
-    companyChange.parentElement.classList.toggle('stock-exchange--negative', !stockChangeIncreased);
-    companyAfterHours.parentElement.classList.toggle('stock-exchange--positive', afterHoursIncreased);
-    companyAfterHours.parentElement.classList.toggle('stock-exchange--negative', !afterHoursIncreased);
-};
-
-const drawCompanyGraph = (company, daysToShow = 1) => {
-    const graphCanvas = document.querySelector('.stock-exchange__graph-canvas');
-    const newCompanyGraph = companyGraph || new Graph(graphCanvas);
-    newCompanyGraph.updateGraph(company, daysToShow);
 };
 
 export { showCompanyData, drawCompanyGraph }

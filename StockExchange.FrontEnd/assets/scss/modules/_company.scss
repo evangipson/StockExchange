@@ -9,7 +9,6 @@
 
     &-stock-change,
     &-after-hours {
-        display: flex;
         flex-flow: row;
         align-items: center;
         gap: 4px;
@@ -18,5 +17,17 @@
         &-time {
             font-size: var(--font-caption);
         }
+    }
+
+    &-stock-change {
+        display: flex;
+    }
+
+    &-after-hours {
+        display: none;
+    }
+
+    &-after-hours--active {
+        display: flex;
     }
 }

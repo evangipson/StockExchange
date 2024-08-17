@@ -5,7 +5,7 @@
     &-data {
         display: flex;
         flex-flow: column nowrap;
-        padding: var(--gutter);
+        margin-top: var(--gutter);
     }
 
     &-canvas {
@@ -16,6 +16,7 @@
         display: flex;
         flex-flow: row;
         gap: var(--gutter);
+        margin-top: var(--gutter);
         font-size: var(--font-small);
         list-style-type: none;
     }
