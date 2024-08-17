@@ -34,16 +34,18 @@ export class RealTimeGraph {
     updateGraph(company, daysToShow = 1) {
         let filteredCompanyData = company.getDataForDays(daysToShow);
         const xMin = 0;
+        const yMin = 0;
+        let yMax, xMax;
 
         if (filteredCompanyData.length > GraphConstants.maxGraphNodes) {
             filteredCompanyData = company.getAverageDataInChunks(daysToShow);
         }
         
-        const yMin = 0;
-        const yMax = filteredCompanyData.toSorted((a, b) => b.Price - a.Price)[0].Price;
-        const xMax = filteredCompanyData.length;
+        yMax = filteredCompanyData.toSorted((a, b) => b.Price - a.Price)[0].Price;
+        xMax = filteredCompanyData.length;
         this.#xScale = (this.#canvas.width / (xMax - xMin));
         this.#yScale = (this.#canvas.height / (yMax - yMin));
+
         this.#canvasContext.scale(this.#xScale, this.#yScale);
 
         // Set fill style

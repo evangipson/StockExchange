@@ -6,4 +6,17 @@
     &-stock-value {
         font-size: var(--font-medium);
     }
+
+    &-stock-change,
+    &-after-hours {
+        display: flex;
+        flex-flow: row;
+        align-items: center;
+        gap: 4px;
+        font-size: var(--font-small);
+
+        &-time {
+            font-size: var(--font-caption);
+        }
+    }
 }

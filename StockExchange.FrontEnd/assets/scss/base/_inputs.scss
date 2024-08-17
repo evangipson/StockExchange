@@ -1,0 +1,15 @@
+.stock-exchange__input {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: space-between;
+    column-gap: var(--vertical-spacing);
+
+    label, input {
+        cursor: pointer;
+    }
+
+    label {
+        font-size: var(--font-caption);
+    }
+}

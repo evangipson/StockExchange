@@ -1,0 +1,17 @@
+:root {
+    --font-big: 48px;
+    --font-medium: 32px;
+    --font-small: 18px;
+    --font-caption: 14px;
+    --color-positive: rgb(0, 200, 5);
+    --color-positive-transparent: rgba(0, 200, 5, 0.14);
+    --color-negative: rgb(255, 80, 0);
+    --color-negative-transparent: rgba(255, 80, 0, 0.14);
+    --color-background: #131313;
+    --color-background-light: #181818;
+    --color-background-lighter: #313131;
+    --color-background-lightest: #515151;
+    --color-foreground: #dcdcdc;
+    --vertical-spacing: 48px;
+    --default-border-radius: 4px;
+}

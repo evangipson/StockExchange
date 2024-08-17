@@ -6,8 +6,20 @@ import { Company } from "../classes/company.js";
 let companyGraph;
 
 const fetchCompanyData = async () => {
-    await fakeServerResponseTime(Math.random() * 2000);
+    await fakeServerResponseTime(Math.random() * 1000);
     return new Company('Microsoft');
+};
+
+const changeGraphScope = (company, graphPeriods, clickedPeriod) => {
+    const companyChangeTime = document.querySelector('.stock-exchange__company-stock-change-time');
+    const daysOfData = clickedPeriod.getAttribute('data-days');
+    const stockChangeMessage = clickedPeriod.getAttribute('data-stock-change');
+
+    graphPeriods.forEach(clickedPeriod => clickedPeriod.classList.remove('stock-exchange__graph-period-item--active'));
+    clickedPeriod.classList.add('stock-exchange__graph-period-item--active');
+    drawCompanyGraph(company, daysOfData);
+    updateCompanyData(company, daysOfData);
+    companyChangeTime.innerText = stockChangeMessage;
 };
 
 const createGraphPeriods = (company) => {
@@ -74,12 +86,7 @@ const createGraphPeriods = (company) => {
     }
 
     graphPeriods.forEach((period, index) => {
-        period.addEventListener('click', () => {
-            graphPeriods.forEach(graphPeriod => graphPeriod.classList.remove('stock-exchange__graph-period-item--active'));
-            period.classList.add('stock-exchange__graph-period-item--active');
-            drawCompanyGraph(company, period.getAttribute('data-days'));
-            updateCompanyData(company, period.getAttribute('data-days'));
-        });
+        period.addEventListener('click', () => changeGraphScope(company, graphPeriods, period));
         graphPeriodList.appendChild(period);
         if(index == 0) {
             period.click();
@@ -102,19 +109,21 @@ const updateCompanyData = (company, daysToShow = 1) => {
     const stockChange = company.getStockChangeByDays(daysToShow);
     const valueIncreased = stockChange > 0.0;
     const companyValue = document.querySelector('.stock-exchange__company-stock-value');
-    const companyChange = document.querySelector('.stock-exchange__company-stock-change');
-    const companyAfterHours = document.querySelector('.stock-exchange__company-stock-after-hours');
+    const transactionWindowValue = document.querySelector('.stock-exchange__transaction-company-price');
+    const companyChange = document.querySelector('.stock-exchange__company-stock-change-value');
+    const companyAfterHours = document.querySelector('.stock-exchange__company-after-hours-value');
+    const companyAfterHoursTime = document.querySelector('.stock-exchange__company-after-hours-time');
     document.querySelector('.stock-exchange__company-name').innerText = company.Name;
     companyValue.innerText = formatAsCurrency(company.StockValue);
+    transactionWindowValue.innerText = formatAsCurrency(company.StockValue);
     companyChange.innerText = formatAsCurrency(stockChange, valueIncreased);
     companyAfterHours.innerText = formatAsCurrency(company.StockAfterHours, company.StockAfterHours > 0.0);
+    companyAfterHoursTime.innerText = 'after hours';
 
-    companyChange.classList.toggle('stock-exchange--positive', valueIncreased);
-    companyChange.classList.toggle('stock-exchange--negative', !valueIncreased);
-    companyAfterHours.classList.toggle('stock-exchange--positive', company.StockAfterHours > 0.0);
-    companyAfterHours.classList.toggle('stock-exchange--negative', company.StockAfterHours < 0.0);
-
-    // add data-text or w/e from the list items as ::after? or maybe just supplement innerText...
+    companyChange.parentElement.classList.toggle('stock-exchange--positive', valueIncreased);
+    companyChange.parentElement.classList.toggle('stock-exchange--negative', !valueIncreased);
+    companyAfterHours.parentElement.classList.toggle('stock-exchange--positive', company.StockAfterHours > 0.0);
+    companyAfterHours.parentElement.classList.toggle('stock-exchange--negative', company.StockAfterHours < 0.0);
 };
 
 const drawCompanyGraph = (company, daysToShow = 1) => {

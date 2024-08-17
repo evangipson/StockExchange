@@ -1,6 +1,6 @@
 body {
-    background-color: #131313;
-    color: #dedede;
+    background-color: var(--color-background);
+    color: var(--color-foreground);
     font-size: var(--font-medium);
 }
 
@@ -9,7 +9,7 @@ p, h1, h2, h3, h4 {
 }
 
 .stock-exchange {
-    font-size: 18px;
+    font-size: var(--font-medium);
     font-family: monospace;
     font-weight: bold;
 }

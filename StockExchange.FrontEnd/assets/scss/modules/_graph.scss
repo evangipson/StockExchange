@@ -1,8 +1,10 @@
 .stock-exchange__graph {
+    display: flex;
+    flex-flow: column;
+
     &-data {
         display: flex;
         flex-flow: column nowrap;
-        max-height: 400px;
         padding: 16px;
     }
 
@@ -15,12 +17,13 @@
         display: flex;
         flex-flow: row;
         gap: 16px;
+        font-size: var(--font-small);
         list-style-type: none;
     }
 
     &-period li {
         transition: color 0.33s ease-in-out;
-        margin-bottom: 8px;
+        padding-bottom: 12px;
     }
 
     &-period li:hover {
