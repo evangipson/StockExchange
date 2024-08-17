@@ -9,6 +9,10 @@
         cursor: pointer;
     }
 
+    input {
+        font-family: var(--font-family);
+    }
+
     label {
         font-size: var(--font-caption);
     }

@@ -1,9 +1,20 @@
+/* abstracts imported first, as there are no dependencies */
 @import 'abstracts/screens';
 @import 'abstracts/properties';
+
+/* mixins are only dependent on abstracts */
+@import 'mixins/animation';
+@import 'mixins/border';
+
+/* base is dependent on mixins */
+@import 'base/colors';
 @import 'base/inputs';
 @import 'base/layout';
 @import 'base/reset';
 @import 'base/select';
+
+/* modules are dependent on base */
 @import 'modules/company';
 @import 'modules/graph';
+@import 'modules/loader';
 @import 'modules/transaction-window';

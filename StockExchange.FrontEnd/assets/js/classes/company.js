@@ -1,6 +1,6 @@
 import { coinFlip } from "../utils/numberUtils.js";
-import { GraphConstants } from "./realTimeGraph.js";
-import { chunk, average } from '../utils/jinq.js';
+import { GraphConstants } from "./graph.js";
+import { chunk } from '../utils/collectionUtils.js';
 
 const getDayOfData = (initialPrice, dayDifference = 0) => {
     const now = new Date();
@@ -106,6 +106,10 @@ export class Company {
         return this.#dataByPrice;
     }
 
+    get StockAfterHours() {
+        return this.#stockAfterHours;
+    }
+
     getAverageDataInChunks(daysToShow = 1) {
         const filteredDayData = this.getDataForDays(daysToShow);
         const chunksOfDays = chunk(filteredDayData, filteredDayData.length / GraphConstants.maxGraphNodes);
@@ -141,9 +145,5 @@ export class Company {
     getStockChangeByYears(yearAmount = 1) {
         const thisYearsValues = this.getDataForDays(yearAmount * 365).sort(data => data.Price);
         return thisYearsValues[thisYearsValues.length - 1].Price - thisYearsValues[0].Price;
-    }
-
-    get StockAfterHours() {
-        return this.#stockAfterHours;
     }
 }

@@ -1,8 +1,14 @@
 :root {
+    /* font family */
+    --font-family: monospace;
+
+    /* font sizes */
     --font-big: 48px;
     --font-medium: 32px;
     --font-small: 18px;
     --font-caption: 14px;
+
+    /* palette */
     --color-positive: rgb(0, 200, 5);
     --color-positive-transparent: rgba(0, 200, 5, 0.14);
     --color-negative: rgb(255, 80, 0);
@@ -12,6 +18,23 @@
     --color-background-lighter: #313131;
     --color-background-lightest: #515151;
     --color-foreground: #dcdcdc;
+
+    /* spacing */
     --vertical-spacing: 48px;
+    --gutter-large: 24px;
+    --gutter: 16px;
+    --gutter-small: 12px;
+    --gutter-micro: 8px;
+
+    /* border */
     --default-border-radius: 4px;
+    --default-border-width: 1px;
+
+    /* animation */
+    --default-animation-time: 0.3s;
+    --fast-animation-time: 0.2s;
+
+    /* z-layering */
+    --default-layer: 1;
+    --top-layer: 2;
 }

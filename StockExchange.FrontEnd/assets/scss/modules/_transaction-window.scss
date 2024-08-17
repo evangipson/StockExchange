@@ -1,21 +1,21 @@
 .stock-exchange__transaction {
     &-window {
+        @include border;
         display: flex;
         flex-flow: column nowrap;
         font-size: var(--font-caption);
-        padding: 16px;
+        padding: var(--gutter);
         background-color: var(--color-background-light);
-        border: 1px solid var(--color-background-lighter);
         border-radius: var(--default-border-radius);
     }
 
     &-window > *:not(:first-child) {
-        padding-top: 12px;
-        margin-top: 12px;
+        padding-top: var(--gutter-small);
+        margin-top: var(--gutter-small);
     }
 
     &-window > *:nth-child(2) {
-        border-top: 1px solid var(--color-background-lighter);
+        @include top-border;
     }
 
     &-header {

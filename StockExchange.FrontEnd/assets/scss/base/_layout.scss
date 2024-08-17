@@ -1,12 +1,22 @@
 .stock-exchange {
-    display: flex;
     flex-flow: column nowrap;
     margin: 0 auto;
     width: 100%;
     max-width: $screen-widescreen;
+    padding-left: var(--gutter);
+    padding-right: var(--gutter);
+    box-sizing: border-box;
+    font-size: var(--font-medium);
+    font-family: var(--font-family);
+    font-weight: bold;
+
+    &,
+    &__two-column,
+    &__row {
+        display: flex;
+    }
 
     &__two-column {
-        display: flex;
         flex-flow: column nowrap;
     }
 

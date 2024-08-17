@@ -1,48 +1,52 @@
 .stock-exchange__input {
     &--select,
+    &--option,
+    &--select-active &--option-list {
+        display: flex;
+    }
+
+    &--select,
     &--select:after,
     &--selected-option,
     &--option {
         font-size: var(--font-caption);
     }
 
+    &--select:after,
     &--selected-option,
-    &--option-list,
-    &--option {
-        box-sizing: border-box;
+    &--option-list {
+        z-index: var(--top-layer);
+    }
+
+    &--select,
+    &--selected-option,
+    &--option-list {
+        width: 100%;
     }
     
     &--select {
-        display: flex;
         position: relative;
         max-width: 150px;
-        width: 100%;
-        z-index: 1;
     }
 
     &--select:after {
+        @include fast-transition(transform, color);
         content: '❯';
         position: absolute;
-        display: block;
-        right: 16px;
-        top: 8px;
+        right: var(--gutter);
+        top: var(--gutter-micro);
         color: var(--color-background-lighter);
         transform: rotate(-90deg);
-        transition: transform 0.25s ease-in-out, color 0.25s ease-in-out;
         pointer-events: none;
-        z-index: 3;
     }
 
     &--selected-option {
-        display: block;
+        @include border;
         background-color: var(--color-background);
         color: var(--color-foreground);
-        width: 100%;
-        padding: 8px 24px 8px 8px;
-        font-family: monospace;
+        padding: var(--gutter-micro);
+        padding-right: var(--gutter-large);
         border-radius: var(--default-border-radius);
-        border: 1px solid var(--color-background-lighter);
-        z-index: 3;
     }
     
     &--selected-option:active,
@@ -57,25 +61,22 @@
     }
 
     &--option-list {
+        @include border;
         display: none;
         flex-flow: column nowrap;
         position: absolute;
         top: 100%;
-        width: 100%;
         background-color: var(--color-background);
         color: var(--color-foreground);
-        border: 1px solid var(--color-background-lighter);
         border-bottom-left-radius: var(--default-border-radius);
         border-bottom-right-radius: var(--default-border-radius);
-        z-index: 2;
     }
 
     &--option {
-        display: flex;
-        flex: 1;
+        @include top-border;
         cursor: pointer;
-        padding: 8px;
-        border-top: 1px solid var(--color-background-lighter);
+        flex: 1;
+        padding: var(--gutter-micro);
     }
 
     &--option:first-child {
@@ -85,9 +86,5 @@
 
     &--option:hover {
         background-color: var(--color-background-light);
-    }
-
-    &--select-active &--option-list {
-        display: flex;
     }
 }

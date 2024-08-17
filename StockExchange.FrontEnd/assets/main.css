@@ -1,9 +1,15 @@
 @charset "UTF-8";
+/* abstracts imported first, as there are no dependencies */
+/* screen size definitions */
 :root {
+  /* font family */
+  --font-family: monospace;
+  /* font sizes */
   --font-big: 48px;
   --font-medium: 32px;
   --font-small: 18px;
   --font-caption: 14px;
+  /* palette */
   --color-positive: rgb(0, 200, 5);
   --color-positive-transparent: rgba(0, 200, 5, 0.14);
   --color-negative: rgb(255, 80, 0);
@@ -13,8 +19,30 @@
   --color-background-lighter: #313131;
   --color-background-lightest: #515151;
   --color-foreground: #dcdcdc;
+  /* spacing */
   --vertical-spacing: 48px;
+  --gutter-large: 24px;
+  --gutter: 16px;
+  --gutter-small: 12px;
+  --gutter-micro: 8px;
+  /* border */
   --default-border-radius: 4px;
+  --default-border-width: 1px;
+  /* animation */
+  --default-animation-time: 0.3s;
+  --fast-animation-time: 0.2s;
+  /* z-layering */
+  --default-layer: 1;
+  --top-layer: 2;
+}
+
+/* mixins are only dependent on abstracts */
+/* base is dependent on mixins */
+.stock-exchange--positive {
+  color: var(--color-positive);
+}
+.stock-exchange--negative {
+  color: var(--color-negative);
 }
 
 .stock-exchange__input {
@@ -27,19 +55,29 @@
 .stock-exchange__input label, .stock-exchange__input input {
   cursor: pointer;
 }
+.stock-exchange__input input {
+  font-family: var(--font-family);
+}
 .stock-exchange__input label {
   font-size: var(--font-caption);
 }
 
 .stock-exchange {
-  display: flex;
   flex-flow: column nowrap;
   margin: 0 auto;
   width: 100%;
   max-width: 1200px;
+  padding-left: var(--gutter);
+  padding-right: var(--gutter);
+  box-sizing: border-box;
+  font-size: var(--font-medium);
+  font-family: var(--font-family);
+  font-weight: bold;
+}
+.stock-exchange, .stock-exchange__two-column, .stock-exchange__row {
+  display: flex;
 }
 .stock-exchange__two-column {
-  display: flex;
   flex-flow: column nowrap;
 }
 .stock-exchange__primary {
@@ -69,55 +107,42 @@ p, h1, h2, h3, h4 {
   margin: 0;
 }
 
-.stock-exchange {
-  font-size: var(--font-medium);
-  font-family: monospace;
-  font-weight: bold;
+.stock-exchange__input--select, .stock-exchange__input--option, .stock-exchange__input--select-active .stock-exchange__input--option-list {
+  display: flex;
 }
-
-.stock-exchange--positive {
-  color: var(--color-positive);
-}
-
-.stock-exchange--negative {
-  color: var(--color-negative);
-}
-
 .stock-exchange__input--select, .stock-exchange__input--select:after, .stock-exchange__input--selected-option, .stock-exchange__input--option {
   font-size: var(--font-caption);
 }
-.stock-exchange__input--selected-option, .stock-exchange__input--option-list, .stock-exchange__input--option {
-  box-sizing: border-box;
+.stock-exchange__input--select:after, .stock-exchange__input--selected-option, .stock-exchange__input--option-list {
+  z-index: var(--top-layer);
+}
+.stock-exchange__input--select, .stock-exchange__input--selected-option, .stock-exchange__input--option-list {
+  width: 100%;
 }
 .stock-exchange__input--select {
-  display: flex;
   position: relative;
   max-width: 150px;
-  width: 100%;
-  z-index: 1;
 }
 .stock-exchange__input--select:after {
+  transition-duration: var(--fast-animation-time);
+  transition-property: transform, color;
+  transition-timing-function: ease-in-out;
   content: "❯";
   position: absolute;
-  display: block;
-  right: 16px;
-  top: 8px;
+  right: var(--gutter);
+  top: var(--gutter-micro);
   color: var(--color-background-lighter);
   transform: rotate(-90deg);
-  transition: transform 0.25s ease-in-out, color 0.25s ease-in-out;
   pointer-events: none;
-  z-index: 3;
 }
 .stock-exchange__input--selected-option {
-  display: block;
+  box-sizing: border-box;
+  border: var(--default-border-width) solid var(--color-background-lighter);
   background-color: var(--color-background);
   color: var(--color-foreground);
-  width: 100%;
-  padding: 8px 24px 8px 8px;
-  font-family: monospace;
+  padding: var(--gutter-micro);
+  padding-right: var(--gutter-large);
   border-radius: var(--default-border-radius);
-  border: 1px solid var(--color-background-lighter);
-  z-index: 3;
 }
 .stock-exchange__input--selected-option:active, .stock-exchange__input--selected-option:focus, .stock-exchange__input--selected-option:focus-visible {
   outline: 1px solid var(--color-background-lightest);
@@ -127,24 +152,23 @@ p, h1, h2, h3, h4 {
   color: var(--color-foreground);
 }
 .stock-exchange__input--option-list {
+  box-sizing: border-box;
+  border: var(--default-border-width) solid var(--color-background-lighter);
   display: none;
   flex-flow: column nowrap;
   position: absolute;
   top: 100%;
-  width: 100%;
   background-color: var(--color-background);
   color: var(--color-foreground);
-  border: 1px solid var(--color-background-lighter);
   border-bottom-left-radius: var(--default-border-radius);
   border-bottom-right-radius: var(--default-border-radius);
-  z-index: 2;
 }
 .stock-exchange__input--option {
-  display: flex;
-  flex: 1;
+  box-sizing: border-box;
+  border-top: var(--default-border-width) solid var(--color-background-lighter);
   cursor: pointer;
-  padding: 8px;
-  border-top: 1px solid var(--color-background-lighter);
+  flex: 1;
+  padding: var(--gutter-micro);
 }
 .stock-exchange__input--option:first-child {
   margin-top: 0;
@@ -153,10 +177,8 @@ p, h1, h2, h3, h4 {
 .stock-exchange__input--option:hover {
   background-color: var(--color-background-light);
 }
-.stock-exchange__input--select-active .stock-exchange__input--option-list {
-  display: flex;
-}
 
+/* modules are dependent on base */
 .stock-exchange__company-name {
   font-size: var(--font-big);
 }
@@ -181,22 +203,23 @@ p, h1, h2, h3, h4 {
 .stock-exchange__graph-data {
   display: flex;
   flex-flow: column nowrap;
-  padding: 16px;
+  padding: var(--gutter);
 }
 .stock-exchange__graph-canvas {
-  max-width: 1200px;
   width: 100%;
 }
 .stock-exchange__graph-period {
   display: flex;
   flex-flow: row;
-  gap: 16px;
+  gap: var(--gutter);
   font-size: var(--font-small);
   list-style-type: none;
 }
 .stock-exchange__graph-period li {
-  transition: color 0.33s ease-in-out;
-  padding-bottom: 12px;
+  transition-duration: var(--default-animation-time);
+  transition-property: color;
+  transition-timing-function: ease-in-out;
+  padding-bottom: var(--gutter-small);
 }
 .stock-exchange__graph-period li:hover {
   cursor: pointer;
@@ -207,21 +230,57 @@ p, h1, h2, h3, h4 {
   border-bottom: 3px solid var(--color-positive);
 }
 
+.stock-exchange--loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+.stock-exchange--loading > * {
+  visibility: hidden;
+  pointer-events: none;
+  user-select: none;
+}
+.stock-exchange--loading::after {
+  content: "";
+  position: absolute;
+  width: 50px;
+  padding: 8px;
+  top: calc(50% - 25px);
+  margin: 0 auto;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--color-background-lighter);
+  --_m: conic-gradient(#0000 10%, #000), linear-gradient(#000 0 0) content-box;
+  -webkit-mask: var(--_m);
+  mask: var(--_m);
+  -webkit-mask-composite: source-out;
+  mask-composite: subtract;
+  animation: rotateLoader 1s infinite linear;
+}
+
+@keyframes rotateLoader {
+  to {
+    transform: rotate(1turn);
+  }
+}
 .stock-exchange__transaction-window {
+  box-sizing: border-box;
+  border: var(--default-border-width) solid var(--color-background-lighter);
   display: flex;
   flex-flow: column nowrap;
   font-size: var(--font-caption);
-  padding: 16px;
+  padding: var(--gutter);
   background-color: var(--color-background-light);
-  border: 1px solid var(--color-background-lighter);
   border-radius: var(--default-border-radius);
 }
 .stock-exchange__transaction-window > *:not(:first-child) {
-  padding-top: 12px;
-  margin-top: 12px;
+  padding-top: var(--gutter-small);
+  margin-top: var(--gutter-small);
 }
 .stock-exchange__transaction-window > *:nth-child(2) {
-  border-top: 1px solid var(--color-background-lighter);
+  box-sizing: border-box;
+  border-top: var(--default-border-width) solid var(--color-background-lighter);
 }
 .stock-exchange__transaction-header {
   font-size: var(--font-small);
