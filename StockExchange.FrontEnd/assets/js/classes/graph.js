@@ -42,7 +42,7 @@ export class Graph {
         }
         
         yMax = filteredCompanyData.toSorted((a, b) => b.Price - a.Price)[0].Price;
-        xMax = filteredCompanyData.length;
+        xMax = filteredCompanyData.length - 1;
         this.#xScale = (this.#canvas.width / (xMax - xMin));
         this.#yScale = (this.#canvas.height / (yMax - yMin));
 

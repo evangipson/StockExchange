@@ -18,7 +18,7 @@
 
     &__two-column {
         flex-flow: column nowrap;
-        row-gap: var(--gutter-large);
+        gap: var(--vertical-spacing);
     }
 
     &__primary {
@@ -34,7 +34,6 @@
     @media (min-width: $screen-desktop) {
         &__two-column {
             flex-flow: row wrap;
-            row-gap: 0;
         }
 
         &__secondary {
