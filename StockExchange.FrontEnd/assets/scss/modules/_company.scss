@@ -1,4 +1,10 @@
 .stock-exchange__company {
+    &-stock-value,
+    &-stock-change-value,
+    &-after-hours-value {
+        font-family: var(--monospace-font-family);
+    }
+
     &-name {
         font-size: var(--font-big);
     }
@@ -9,6 +15,7 @@
 
     &-stock-change,
     &-after-hours {
+        display: flex;
         flex-flow: row;
         align-items: center;
         gap: 4px;
@@ -19,15 +26,13 @@
         }
     }
 
-    &-stock-change {
-        display: flex;
-    }
-
     &-after-hours {
-        display: none;
-    }
+        visibility: hidden;
+        user-select: none;
 
-    &-after-hours--active {
-        display: flex;
+        &--active {
+            visibility: visible;
+            user-select: initial;
+        }
     }
 }

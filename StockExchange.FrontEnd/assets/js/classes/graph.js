@@ -5,26 +5,89 @@ export class GraphConstants {
     static maxGraphNodes = 30;
 }
 
-export class Graph {
-    #canvas;
-    #canvasContext;
-    #xScale;
-    #yScale;
+class GraphPoint {
+    #x;
+    #y;
 
-    /**
-     * @param {HTMLElement} canvasElement 
-     */
-    constructor(canvasElement) {
-        this.#canvas = canvasElement;
-        this.#canvas.height = canvasElement.clientHeight;
-        this.#canvas.width = canvasElement.clientWidth;
-        this.#canvasContext = canvasElement.getContext('2d');
-        window.addEventListener('resize', () => resizeGraph(canvasElement), false);
+    constructor(x, y) {
+        this.#x = x;
+        this.#y = y;
     }
 
-    resizeGraph(canvasElement) {
-        this.#canvas.height = canvasElement.clientHeight;
-        this.#canvas.width = canvasElement.clientWidth;
+    get X() {
+        return this.#x;
+    }
+
+    get Y() {
+        return this.#y;
+    }
+}
+
+class GraphLine {
+    #startPoint;
+    #endPoint;
+
+    constructor(startPoint, endPoint) {
+        this.#startPoint = startPoint;
+        this.#endPoint = endPoint;
+    }
+
+    get StartPoint() {
+        return this.#startPoint;
+    }
+
+    get EndPoint() {
+        return this.#endPoint;
+    }
+}
+
+export class Graph {
+    #svg;
+    #scale;
+
+    /**
+     * @param {SVGElement} graphElement 
+     */
+    constructor(graphElement) {
+        this.#svg = graphElement;
+    }
+
+    /**
+     * 
+     * @param {GraphLine} graphLine 
+     * @returns 
+     */
+    createLine(graphLine, lineWidth) {
+        const newHoverGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        const newHoverRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        const newCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        const newLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+
+        newHoverRect.setAttribute('stroke', 'none');
+        newHoverRect.setAttribute('fill', 'none');
+        newHoverRect.setAttribute('height', '100%');
+        newHoverRect.setAttribute('width', graphLine.EndPoint.X - graphLine.StartPoint.X);
+        newHoverRect.setAttribute('x', graphLine.StartPoint.X);
+        newHoverRect.setAttribute('y', 0);
+
+        newLine.setAttribute('stroke-width', lineWidth);
+        newLine.setAttribute('x1', graphLine.StartPoint.X);
+        newLine.setAttribute('x2', graphLine.EndPoint.X);
+        newLine.setAttribute('y1', graphLine.StartPoint.Y);
+        newLine.setAttribute('y2', graphLine.EndPoint.Y);
+
+        newCircle.setAttribute('fill', 'none');
+        newCircle.setAttribute('stroke', 'none');
+        newCircle.setAttribute('stroke-width', lineWidth);
+        newCircle.setAttribute('cx', graphLine.EndPoint.X);
+        newCircle.setAttribute('cy', graphLine.EndPoint.Y);
+        newCircle.setAttribute('r', lineWidth * Math.PI);
+
+        newHoverGroup.appendChild(newHoverRect);
+        newHoverGroup.appendChild(newLine);
+        newHoverGroup.appendChild(newCircle);
+
+        return newHoverGroup;
     }
 
     /**
@@ -33,32 +96,28 @@ export class Graph {
      */
     updateGraph(company, daysToShow = 1) {
         let filteredCompanyData = company.getDataForDays(daysToShow);
-        const xMin = 0;
-        const yMin = 0;
         let yMax, xMax;
 
         if (filteredCompanyData.length > GraphConstants.maxGraphNodes) {
             filteredCompanyData = company.getAverageDataInChunks(daysToShow);
         }
         
-        yMax = filteredCompanyData.toSorted((a, b) => b.Price - a.Price)[0].Price;
+        yMax = Math.max(...filteredCompanyData.map(data => data.Price));
         xMax = filteredCompanyData.length - 1;
-        this.#xScale = (this.#canvas.width / (xMax - xMin));
-        this.#yScale = (this.#canvas.height / (yMax - yMin));
 
-        this.#canvasContext.scale(this.#xScale, this.#yScale);
+        console.info(filteredCompanyData);
+
+        // scope SVG to max values
+        this.#svg.setAttribute('viewBox', `0 0 ${xMax} ${yMax}`);
+        this.#scale = 0.05;
 
         // Set fill style
-        this.#canvasContext.strokeStyle = getProperty('color-negative');
-        this.#canvasContext.fillStyle = getProperty('color-negative-transparent');
-        if (filteredCompanyData[0].Price < filteredCompanyData[filteredCompanyData.length - 1].Price) {
-            this.#canvasContext.strokeStyle = getProperty('color-positive');
-            this.#canvasContext.fillStyle = getProperty('color-positive-transparent');
-        }
-        this.#canvasContext.lineWidth = 1 / this.#xScale;
+        const valueIncreased = filteredCompanyData[0].Price < filteredCompanyData[filteredCompanyData.length - 1].Price;
+        this.#svg.classList.toggle('stock-exchange--positive', valueIncreased);
+        this.#svg.classList.toggle('stock-exchange--negative', !valueIncreased);
 
         // Clear canvas
-        this.#canvasContext.clearRect(0, 0, xMax, yMax);
+        this.#svg.innerHTML = '';
 
         // Draw x-axis
         //this.#canvasContext.beginPath();
@@ -72,43 +131,25 @@ export class Graph {
         //this.#canvasContext.lineTo(0, yMax - yMin);
         //this.#canvasContext.stroke();
 
-        // Draw line of graph
-        this.#canvasContext.beginPath();
-        this.#canvasContext.moveTo(0, yMax - filteredCompanyData[0].Price);
+        // Draw a dashed line through the horizontal center
+        const dashedCenterLine = document.createElementNS('http://www.w3.org/2000/svg','line');
+        dashedCenterLine.setAttribute('stroke-width', this.#scale * 0.75);
+        dashedCenterLine.setAttribute('stroke-dasharray', '0.1');
+        dashedCenterLine.setAttribute('x1', 0);
+        dashedCenterLine.setAttribute('x2', filteredCompanyData.length - 1);
+        dashedCenterLine.setAttribute('y1', yMax - filteredCompanyData[0].Price);
+        dashedCenterLine.setAttribute('y2', yMax - filteredCompanyData[0].Price);
+        dashedCenterLine.classList.add('stock-exchange__graph-center-line');
+        this.#svg.appendChild(dashedCenterLine);
+
+        // Draw line chart of company value over time
+        let previousPoint = new GraphPoint(0, yMax - filteredCompanyData[0].Price);
         [...filteredCompanyData].forEach((data, index) => {
-            this.#canvasContext.lineTo(index, yMax - data.Price);
+            const newGraphPoint = new GraphPoint(index, yMax - data.Price);
+            const newGraphLine = new GraphLine(previousPoint, newGraphPoint);
+            const newLine = this.createLine(newGraphLine, this.#scale);
+            previousPoint = newGraphPoint;
+            this.#svg.appendChild(newLine);
         });
-        this.#canvasContext.stroke();
-
-        // Draw "filled" area below graph
-        this.#canvasContext.beginPath();
-        this.#canvasContext.moveTo(0, this.#canvas.height - filteredCompanyData[0].Price);
-        [...filteredCompanyData].forEach((data, index) => {
-            this.#canvasContext.lineTo(index, yMax - data.Price);
-        });
-        this.#canvasContext.lineTo(filteredCompanyData.length - 1, yMax);
-        this.#canvasContext.fill();
-
-        // this.#canvas.addEventListener('mousemove', (event) => {
-        //     let rect = this.#canvas.getBoundingClientRect(),
-        //         x = event.clientX - rect.left,
-        //         y = event.clientY - rect.top;
-        //     const nearestPointIndex = [...filteredCompanyData].find((data, index) => {
-        //         return index + x >= 1;
-        //     });
-
-        //     if(!nearestPointIndex) {
-        //         return;
-        //     }
-
-        //     if(this.#canvasContext.isPointInPath(x, y)) {
-        //         console.info('point in path');
-        //         this.#canvasContext.beginPath();
-        //         this.#canvasContext.moveTo(x, yMax - nearestPointIndex.Price);
-        //         this.#canvasContext.arc(x, yMax - nearestPointIndex.Price, 1, 0, Math.PI * 1);
-        //         this.#canvasContext.fill();
-        //         this.#canvasContext.closePath();
-        //     }
-        // });
     }
 }

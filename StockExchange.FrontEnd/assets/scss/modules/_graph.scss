@@ -10,9 +10,39 @@
 
     &-canvas {
         width: 100%;
+        height: 350px;
+        stroke: currentColor;
+
+        line {
+            padding: 350px 0;
+            stroke-opacity: 1.0;
+        }
+
+        rect {
+            pointer-events: fill;
+        }
+
+        &:hover line {
+            stroke-opacity: 0.6;
+        }
+        
+        // rect:hover ~ line {
+        //     stroke-opacity: 1.0;
+        // }
+
+        rect:hover ~ circle {
+            stroke: var(--color-background);
+            fill: currentColor;
+        }
+    }
+
+    &-center-line {
+        stroke: var(--color-background-lighter);
+        stroke-opacity: 1.0 !important;
     }
 
     &-period {
+        font-family: var(--monospace-font-family);
         display: flex;
         flex-flow: row;
         gap: var(--gutter);

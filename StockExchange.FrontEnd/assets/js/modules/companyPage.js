@@ -72,11 +72,13 @@ const updateCompanyData = (company, daysToShow = 1) => {
     const transactionWindowValue = document.querySelector('.stock-exchange__transaction-company-price');
     const companyChange = document.querySelector('.stock-exchange__company-stock-change-value');
     const companyAfterHours = document.querySelector('.stock-exchange__company-after-hours');
+    const companyTicker = document.querySelector('.stock-exchange__transaction-header');
     const stockChange = company.getStockChangeByDays(daysToShow);
     const stockChangeIncreased = stockChange > 0.0;
     const showingOneDayOfData = daysToShow == 1;
     
     companyName.innerText = company.Name;
+    companyTicker.innerText = `Buy ${company.Ticker}`;
     companyValue.innerText = formatAsCurrency(company.StockValue);
     transactionWindowValue.innerText = formatAsCurrency(company.StockValue);
     companyChange.innerText = formatAsCurrency(stockChange, stockChangeIncreased);

@@ -57,6 +57,7 @@ class CompanyPriceData {
 
 export class Company {
     #name;
+    #ticker;
     #stockAfterHours;
     #historicalData;
     #dataByPrice;
@@ -68,16 +69,21 @@ export class Company {
      * @param {string} name 
      * @param {CompanyPriceData[]|null} data 
      */
-    constructor(name, data = null) {
+    constructor(name, ticker, data = null) {
         this.#name = name;
+        this.#ticker = ticker;
         this.#historicalData = data ?? getMockCompanyPriceData();
-        this.#stockAfterHours = coinFlip() ? Math.random() * 5 : Math.random() * -5;
+        this.#stockAfterHours = coinFlip() ? Math.random() * 3 : Math.random() * -3;
         this.#dataByPrice = this.#historicalData.toSorted((a, b) => b.Price - a.Price);
         this.#dataByDate = this.#historicalData.toSorted((a, b) => a.Date - b.Date);
     }
 
     get Name() {
         return this.#name;
+    }
+
+    get Ticker() {
+        return this.#ticker;
     }
 
     get AllPriceData() {

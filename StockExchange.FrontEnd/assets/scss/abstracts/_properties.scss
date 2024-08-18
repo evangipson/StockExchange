@@ -1,6 +1,7 @@
 :root {
     /* font family */
-    --font-family: monospace;
+    --font-family: 'Moderustic', sans-serif;
+    --monospace-font-family: 'Courier Prime', monospace;
 
     /* font sizes */
     --font-big: 48px;
@@ -13,7 +14,7 @@
     --color-positive-transparent: rgba(0, 200, 5, 0.05);
     --color-negative: rgb(255, 80, 0);
     --color-negative-transparent: rgba(255, 80, 0, 0.05);
-    --color-background: #131313;
+    --color-background: #121212;
     --color-background-light: #181818;
     --color-background-lighter: #313131;
     --color-background-lightest: #515151;
