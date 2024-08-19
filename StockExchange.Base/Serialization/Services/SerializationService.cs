@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.Logging;
-using Morph.Serializer;
 
 using StockExchange.Base.DependencyInjection.Attributes;
 using StockExchange.Base.Serialization.Models;
 using StockExchange.Base.Serialization.Services.Interfaces;
+using StockExchange.Base.Serialization.Extensions;
 
 namespace StockExchange.Base.Serialization.Services
 {
@@ -37,7 +37,7 @@ namespace StockExchange.Base.Serialization.Services
 				return _entityList.Entities;
 			}
 
-			SerializedList<EntityType> entityList = MorphSerializer.DeserializeStructFromFile<SerializedList<EntityType>>(serializationFilePath)
+			SerializedList<EntityType> entityList = SerializationExtensions.DeserializeStructFromFile<SerializedList<EntityType>>(serializationFilePath)
 				?? new SerializedList<EntityType>([]);
 
 			if (entityList.Entities.Count == 0)

@@ -1,0 +1,90 @@
+.stock-exchange__input {
+    &--select,
+    &--option,
+    &--select-active &--option-list {
+        display: flex;
+    }
+
+    &--select,
+    &--select:after,
+    &--selected-option,
+    &--option {
+        font-size: var(--font-caption);
+    }
+
+    &--select:after,
+    &--selected-option,
+    &--option-list {
+        z-index: var(--top-layer);
+    }
+
+    &--select,
+    &--selected-option,
+    &--option-list {
+        width: 100%;
+    }
+    
+    &--select {
+        position: relative;
+        max-width: 150px;
+    }
+
+    &--select:after {
+        @include fast-transition(transform, color);
+        content: '❯';
+        position: absolute;
+        right: var(--gutter);
+        top: var(--gutter-micro);
+        color: var(--color-background-lighter);
+        transform: rotate(-90deg);
+        pointer-events: none;
+    }
+
+    &--selected-option {
+        @include border;
+        background-color: var(--color-background);
+        color: var(--color-foreground);
+        padding: var(--gutter-micro);
+        padding-right: var(--gutter-large);
+        border-radius: var(--default-border-radius);
+    }
+    
+    &--selected-option:active,
+    &--selected-option:focus,
+    &--selected-option:focus-visible {
+        outline: 1px solid var(--color-background-lightest);
+    }
+
+    &--select.stock-exchange__input--select-active:after {
+        transform: rotate(90deg);
+        color: var(--color-foreground);
+    }
+
+    &--option-list {
+        @include border;
+        display: none;
+        flex-flow: column nowrap;
+        position: absolute;
+        top: 100%;
+        background-color: var(--color-background);
+        color: var(--color-foreground);
+        border-bottom-left-radius: var(--default-border-radius);
+        border-bottom-right-radius: var(--default-border-radius);
+    }
+
+    &--option {
+        @include top-border;
+        cursor: pointer;
+        flex: 1;
+        padding: var(--gutter-micro);
+    }
+
+    &--option:first-child {
+        margin-top: 0;
+        border-top: none;
+    }
+
+    &--option:hover {
+        background-color: var(--color-background-light);
+    }
+}

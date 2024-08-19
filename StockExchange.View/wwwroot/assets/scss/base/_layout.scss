@@ -1,0 +1,43 @@
+.stock-exchange {
+    flex-flow: column nowrap;
+    margin: var(--vertical-spacing) auto 0;
+    width: 100%;
+    max-width: 1400px;
+    padding-left: var(--gutter);
+    padding-right: var(--gutter);
+    box-sizing: border-box;
+    font-size: var(--font-medium);
+    font-family: var(--font-family);
+
+    &,
+    &__two-column,
+    &__row {
+        display: flex;
+    }
+
+    &__two-column {
+        flex-flow: column nowrap;
+        gap: var(--vertical-spacing);
+    }
+
+    &__primary {
+        flex: 1;
+    }
+
+    &__row {
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    @media (min-width: $screen-desktop) {
+        &__two-column {
+            flex-flow: row wrap;
+        }
+
+        &__secondary {
+            margin-top: var(--vertical-spacing);
+        }
+    }
+}

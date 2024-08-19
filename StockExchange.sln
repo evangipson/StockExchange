@@ -14,7 +14,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StockExchange.WebApi", "Sto
 		{BD0AAB95-97BB-46C6-860F-5AFDEBF6FE45} = {BD0AAB95-97BB-46C6-860F-5AFDEBF6FE45}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockExchange.View", "StockExchange.View\StockExchange.View.csproj", "{448FD1BC-4BF9-4D0A-B77D-60F148121F43}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StockExchange.View", "StockExchange.View\StockExchange.View.csproj", "{448FD1BC-4BF9-4D0A-B77D-60F148121F43}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

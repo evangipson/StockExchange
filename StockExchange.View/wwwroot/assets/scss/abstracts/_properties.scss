@@ -1,0 +1,42 @@
+:root {
+    /* font family */
+    --font-family: 'Onest', sans-serif;
+    --monospace-font-family: 'Courier Prime', monospace;
+
+    /* font sizes */
+    --font-big: 48px;
+    --font-medium: 32px;
+    --font-small: 16px;
+    --font-caption: 14px;
+    --font-tiny: 12px;
+
+    /* palette */
+    --color-positive: rgb(0, 200, 5);
+    --color-positive-transparent: rgba(0, 200, 5, 0.05);
+    --color-negative: rgb(255, 80, 0);
+    --color-negative-transparent: rgba(255, 80, 0, 0.05);
+    --color-background: #0f0f0f;
+    --color-background-light: #181818;
+    --color-background-lighter: #313131;
+    --color-background-lightest: #515151;
+    --color-foreground: #dcdcdc;
+
+    /* spacing */
+    --vertical-spacing: 48px;
+    --gutter-large: 24px;
+    --gutter: 16px;
+    --gutter-small: 12px;
+    --gutter-micro: 8px;
+
+    /* border */
+    --default-border-radius: 4px;
+    --default-border-width: 1px;
+
+    /* animation */
+    --default-animation-time: 0.3s;
+    --fast-animation-time: 0.2s;
+
+    /* z-layering */
+    --default-layer: 1;
+    --top-layer: 2;
+}

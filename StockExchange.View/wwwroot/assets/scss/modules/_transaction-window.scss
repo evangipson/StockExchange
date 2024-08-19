@@ -1,0 +1,29 @@
+.stock-exchange__transaction {
+    &-window {
+        @include border;
+        display: flex;
+        flex-flow: column nowrap;
+        font-size: var(--font-caption);
+        padding: var(--gutter);
+        background-color: var(--color-background-light);
+        border-radius: var(--default-border-radius);
+    }
+
+    &-window > *:not(:first-child) {
+        padding-top: var(--gutter-small);
+        margin-top: var(--gutter-small);
+    }
+
+    &-window > *:nth-child(2) {
+        @include top-border;
+    }
+
+    &-header {
+        font-size: var(--font-small);
+    }
+
+    &-company-price {
+        font-size: var(--font-small);
+        font-weight: 500;
+    }
+}

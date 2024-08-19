@@ -1,0 +1,47 @@
+﻿@page "/stocks"
+
+<PageTitle>Stocks</PageTitle>
+
+<div class='stock-exchange'>
+    <div class='stock-exchange__two-column'>
+        <div class='stock-exchange__primary'>
+            <div class='stock-exchange__graph'>
+                <div class='stock-exchange__company'>
+                    <p class='stock-exchange__company-name'></p>
+                    <p class='stock-exchange__company-stock-value'></p>
+                    <div class='stock-exchange__company-stock-change'>
+                        <p class='stock-exchange__company-stock-change-value'></p>
+                        <p class='stock-exchange__company-stock-change-time'></p>
+                    </div>
+                    <div class='stock-exchange__company-after-hours'>
+                        <p class='stock-exchange__company-after-hours-value'></p>
+                        <p class='stock-exchange__company-after-hours-time'></p>
+                    </div>
+                </div>
+                <div class='stock-exchange__graph-data'>
+                    <svg version='1.1'
+                         xmlns='http://www.w3.org/2000/svg'
+                         xmlns:xlink='http://www.w3.org/1999/xlink'
+                         class='stock-exchange__graph-canvas'></svg>
+                    <ul class='stock-exchange__graph-period'></ul>
+                </div>
+            </div>
+        </div>
+        <div class='stock-exchange__secondary'>
+            <div class='stock-exchange__transaction-window'>
+                <p class='stock-exchange__transaction-header'></p>
+                <div class='stock-exchange__input'>
+                    <label for='OrderType'>Type of order</label>
+                    <select name='OrderType'>
+                        <option selected>Shares</option>
+                        <option>Option</option>
+                    </select>
+                </div>
+                <div class='stock-exchange__row'>
+                    <p class='stock-exchange__transaction-content'>Current price</p>
+                    <p class='stock-exchange__transaction-company-price'></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
