@@ -22,14 +22,14 @@ const updateGraphPeriod = (company, graphPeriods, clickedPeriod) => {
 const createGraphPeriods = (company) => {
     const graphPeriodList = document.querySelector('.stock-exchange__graph-period');
     const periods = [
-        { days: 1, message: 'Today', listText: '1D' },
-        { days: 6, message: 'Past week', listText: '1W' },
-        { days: 29, message: 'Past month', listText: '1M' },
-        { days: (29 * 3), message: 'Past 3 months', listText: '3M' },
+        { days: 1, message: 'Today', listText: '1 D' },
+        { days: 6, message: 'Past week', listText: '1 W' },
+        { days: 29, message: 'Past month', listText: '1 M' },
+        { days: (29 * 3), message: 'Past 3 months', listText: '3 M' },
         { days: getDaysFromYearStart(), message: `Past ${getDaysFromYearStart()} days`, listText: 'YTD'},
-        { days: 364, message: 'Past year', listText: '1Y' },
-        { days: (364 * 3), message: 'Past 3 years', listText: '3Y' },
-        { days: (364 * 5), message: 'Past 5 years', listText: '5Y' },
+        { days: 364, message: 'Past year', listText: '1 Y' },
+        { days: (364 * 3), message: 'Past 3 years', listText: '3 Y' },
+        { days: (364 * 5), message: 'Past 5 years', listText: '5 Y' },
     ];
     const graphPeriods = [];
 
@@ -92,7 +92,7 @@ const updateCompanyData = (company, daysToShow = 1) => {
         const afterHoursIncreased = company.StockAfterHours > 0.0;
 
         companyAfterHoursValue.innerText = formatAsCurrency(company.StockAfterHours, afterHoursIncreased);
-        companyAfterHoursTime.innerText = 'after hours';
+        companyAfterHoursTime.innerText = 'After-hours';
         companyAfterHoursValue.classList.toggle('stock-exchange--positive', afterHoursIncreased);
         companyAfterHoursValue.classList.toggle('stock-exchange--negative', !afterHoursIncreased);
     }

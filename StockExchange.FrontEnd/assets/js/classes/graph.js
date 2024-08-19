@@ -1,17 +1,20 @@
-import { getProperty } from "../utils/styleUtils.js";
+import { chunk } from "../utils/collectionUtils.js";
 import { Company } from "./company.js";
 
 export class GraphConstants {
-    static maxGraphNodes = 30;
+    static maxGraphNodes = 60;
 }
 
 class GraphPoint {
     #x;
+    // y is price
     #y;
+    #date;
 
-    constructor(x, y) {
+    constructor(x, y, date) {
         this.#x = x;
         this.#y = y;
+        this.#date = date;
     }
 
     get X() {
@@ -20,6 +23,10 @@ class GraphPoint {
 
     get Y() {
         return this.#y;
+    }
+
+    get Date() {
+        return this.#date;
     }
 }
 
@@ -53,41 +60,74 @@ export class Graph {
     }
 
     /**
-     * 
-     * @param {GraphLine} graphLine 
-     * @returns 
+     * Creates an SVG `<circle` element which represents a point on the graph.
+     * @param {GraphPoint} graphPoint 
      */
-    createLine(graphLine, lineWidth) {
-        const newHoverGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-        const newHoverRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    createCircleForPoint(graphPoint) {
         const newCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-        const newLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-
-        newHoverRect.setAttribute('stroke', 'none');
-        newHoverRect.setAttribute('fill', 'none');
-        newHoverRect.setAttribute('height', '100%');
-        newHoverRect.setAttribute('width', graphLine.EndPoint.X - graphLine.StartPoint.X);
-        newHoverRect.setAttribute('x', graphLine.StartPoint.X);
-        newHoverRect.setAttribute('y', 0);
-
-        newLine.setAttribute('stroke-width', lineWidth);
-        newLine.setAttribute('x1', graphLine.StartPoint.X);
-        newLine.setAttribute('x2', graphLine.EndPoint.X);
-        newLine.setAttribute('y1', graphLine.StartPoint.Y);
-        newLine.setAttribute('y2', graphLine.EndPoint.Y);
 
         newCircle.setAttribute('fill', 'none');
         newCircle.setAttribute('stroke', 'none');
-        newCircle.setAttribute('stroke-width', lineWidth);
-        newCircle.setAttribute('cx', graphLine.EndPoint.X);
-        newCircle.setAttribute('cy', graphLine.EndPoint.Y);
-        newCircle.setAttribute('r', lineWidth * Math.PI);
+        newCircle.setAttribute('stroke-width', this.#scale * 1.5);
+        newCircle.setAttribute('cx', graphPoint.X);
+        newCircle.setAttribute('cy', graphPoint.Y);
+        newCircle.setAttribute('r', this.#scale * Math.PI);
 
-        newHoverGroup.appendChild(newHoverRect);
-        newHoverGroup.appendChild(newLine);
-        newHoverGroup.appendChild(newCircle);
+        return newCircle;
+    }
 
-        return newHoverGroup;
+    /**
+     * Creates an SVG `<line>` top to bottom wherever the point is.
+     * @param {GraphPoint} graphPoint 
+     */
+    createValueLineForPoint(graphPoint) {
+        const newLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+
+        newLine.setAttribute('stroke-width', this.#scale);
+        newLine.setAttribute('x1', graphPoint.X);
+        newLine.setAttribute('x2', graphPoint.X);
+        newLine.setAttribute('y1', 0);
+        newLine.setAttribute('y2', '100%');
+        newLine.classList.add('stock-exchange__graph-value-line');
+
+        return newLine;
+    }
+
+    /**
+     * Creates an SVG `<rect>` top to bottom around the point, meant
+     * for user hover interaction capture.
+     * @param {GraphPoint} graphPoint 
+     */
+    createHoverAreaForPoint(graphPoint) {
+        const hoverRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+
+        hoverRect.setAttribute('stroke', 'none');
+        hoverRect.setAttribute('fill', 'none');
+        hoverRect.setAttribute('height', '100%');
+        hoverRect.setAttribute('width', 2);
+        hoverRect.setAttribute('x', graphPoint.X - 1);
+        hoverRect.setAttribute('y', 0);
+        hoverRect.classList.add('stock-exchange__graph-value-rect');
+
+        return hoverRect;
+    }
+
+    /**
+     * Creates an SVG `<line>` between two points.
+     * @param {GraphPoint} startPoint 
+     * @param {GraphPoint} endPoint 
+     * @returns 
+     */
+    createLineForTwoPoints(startPoint, endPoint) {
+        const newLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+
+        newLine.setAttribute('stroke-width', this.#scale);
+        newLine.setAttribute('x1', startPoint.X);
+        newLine.setAttribute('x2', endPoint.X);
+        newLine.setAttribute('y1', startPoint.Y);
+        newLine.setAttribute('y2', endPoint.Y);
+
+        return newLine;
     }
 
     /**
@@ -108,7 +148,7 @@ export class Graph {
         console.info(filteredCompanyData);
 
         // scope SVG to max values
-        this.#svg.setAttribute('viewBox', `0 0 ${xMax} ${yMax}`);
+        this.#svg.setAttribute('viewBox', `0 -1 ${xMax + 1} ${yMax}`);
         this.#scale = 0.05;
 
         // Set fill style
@@ -119,22 +159,10 @@ export class Graph {
         // Clear canvas
         this.#svg.innerHTML = '';
 
-        // Draw x-axis
-        //this.#canvasContext.beginPath();
-        //this.#canvasContext.moveTo(0, yMax - yMin);
-        //this.#canvasContext.lineTo(xMax, yMax - yMin);
-        //this.#canvasContext.stroke();
-
-        // Draw y-axis
-        //this.#canvasContext.beginPath();
-        //this.#canvasContext.moveTo(0, 0);
-        //this.#canvasContext.lineTo(0, yMax - yMin);
-        //this.#canvasContext.stroke();
-
         // Draw a dashed line through the horizontal center
         const dashedCenterLine = document.createElementNS('http://www.w3.org/2000/svg','line');
         dashedCenterLine.setAttribute('stroke-width', this.#scale * 0.75);
-        dashedCenterLine.setAttribute('stroke-dasharray', '0.1');
+        dashedCenterLine.setAttribute('stroke-dasharray', '0.25');
         dashedCenterLine.setAttribute('x1', 0);
         dashedCenterLine.setAttribute('x2', filteredCompanyData.length - 1);
         dashedCenterLine.setAttribute('y1', yMax - filteredCompanyData[0].Price);
@@ -142,14 +170,44 @@ export class Graph {
         dashedCenterLine.classList.add('stock-exchange__graph-center-line');
         this.#svg.appendChild(dashedCenterLine);
 
-        // Draw line chart of company value over time
-        let previousPoint = new GraphPoint(0, yMax - filteredCompanyData[0].Price);
-        [...filteredCompanyData].forEach((data, index) => {
-            const newGraphPoint = new GraphPoint(index, yMax - data.Price);
-            const newGraphLine = new GraphLine(previousPoint, newGraphPoint);
-            const newLine = this.createLine(newGraphLine, this.#scale);
-            previousPoint = newGraphPoint;
-            this.#svg.appendChild(newLine);
-        });
+        // Get all points of value in dataset
+        const points = [...filteredCompanyData].map((data, index) => new GraphPoint(index, data.Price, data.Date));
+        console.info(points);
+
+        // Draw circles where the points are, that will show up when a user hovers near them
+        const circles = points.map(point => this.createCircleForPoint(point));
+
+        // Draw rectanges behind the points that act as user interactivity areas
+        const hoverRects = points.map(point => this.createHoverAreaForPoint(point));
+
+        // Draw a line from top to bottom through the point that will show upon
+        // user hovering over the rectangle, and display the value and date
+        const valueLines = points.map(point => this.createValueLineForPoint(point));
+
+        // Draw lines in between each pair of points
+        const chunkedPoints = chunk(points, 2);
+        const graphLines = chunkedPoints.map((points, index) => this.createLineForTwoPoints(points[0], points[1], index));
+        console.info(graphLines);
+
+        // Attach all the SVG elements to the graph
+        hoverRects.forEach(hoverRect => this.#svg.appendChild(hoverRect));
+        valueLines.forEach(valueLine => this.#svg.appendChild(valueLine));
+        graphLines.forEach(graphLine => this.#svg.appendChild(graphLine));
+        circles.forEach(circle => this.#svg.appendChild(circle));
+
+        // Draw lines between each point
+        // let previousPoint = new GraphPoint(0, yMax - filteredCompanyData[0].Price, filteredCompanyData[0].Date);
+        // [...filteredCompanyData].forEach((data, index) => {
+        //     const newGraphPoint = new GraphPoint(index, yMax - data.Price, data.Date);
+        //     const newGraphLine = new GraphLine(previousPoint, newGraphPoint);
+        //     const newLine = this.createLineForTwoPoints(newGraphLine, this.#scale);
+        //     previousPoint = newGraphPoint;
+        //     this.#svg.appendChild(newLine);
+        // });
+
+        // Draw rectangles behind every "collection" of points (i.e.: for a day,
+        // pre-market, the day itself, and after hours; for a week, each day)
+        // which will turn the stroke-opacity all the way up for the line in that
+        // collection when hovered on
     }
 }

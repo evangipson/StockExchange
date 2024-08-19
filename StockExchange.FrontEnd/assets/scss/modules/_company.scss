@@ -1,16 +1,21 @@
 .stock-exchange__company {
-    &-stock-value,
+    display: flex;
+    flex-flow: column;
+
     &-stock-change-value,
     &-after-hours-value {
-        font-family: var(--monospace-font-family);
+        font-weight: 700;
+        letter-spacing: 0.3px;
     }
 
     &-name {
         font-size: var(--font-big);
+        font-weight: 500;
     }
 
     &-stock-value {
         font-size: var(--font-medium);
+        font-weight: 500;
     }
 
     &-stock-change,
@@ -18,12 +23,9 @@
         display: flex;
         flex-flow: row;
         align-items: center;
-        gap: 4px;
-        font-size: var(--font-small);
-
-        &-time {
-            font-size: var(--font-caption);
-        }
+        font-size: var(--font-caption);
+        margin-top: var(--gutter-small);
+        column-gap: 4px;
     }
 
     &-after-hours {

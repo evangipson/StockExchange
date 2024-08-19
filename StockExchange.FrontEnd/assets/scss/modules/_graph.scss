@@ -22,18 +22,32 @@
             pointer-events: fill;
         }
 
+        g {
+            overflow: visible;
+        }
+
+        circle {
+            z-index: var(--top-layer);
+        }
+
         &:hover line {
             stroke-opacity: 0.6;
         }
-        
-        // rect:hover ~ line {
-        //     stroke-opacity: 1.0;
-        // }
 
         rect:hover ~ circle {
             stroke: var(--color-background);
             fill: currentColor;
         }
+        
+        // rect:hover ~ line {
+        //     stroke-opacity: 1.0;
+        // }
+    }
+
+    &-value-rect:hover ~ &-value-line,
+    &-circle-rect:hover ~ &-value-line--second {
+        stroke: var(--color-background-lightest);
+        stroke-opacity: 1.0;
     }
 
     &-center-line {
@@ -41,13 +55,19 @@
         stroke-opacity: 1.0 !important;
     }
 
+    &-value-line,
+    &-value-line--second {
+        stroke: none;
+        stroke-opacity: 0;
+    }
+
     &-period {
-        font-family: var(--monospace-font-family);
         display: flex;
         flex-flow: row;
         gap: var(--gutter);
         margin-top: var(--gutter);
         font-size: var(--font-small);
+        font-weight: 700;
         list-style-type: none;
     }
 

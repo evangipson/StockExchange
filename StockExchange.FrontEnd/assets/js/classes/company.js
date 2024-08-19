@@ -4,12 +4,15 @@ import { chunk } from '../utils/collectionUtils.js';
 
 const getDayOfData = (initialPrice, dayDifference = 0) => {
     const now = new Date();
+    now.setHours(8);
     let date = now;
     let price = initialPrice;
-    return Array.from(Array(8).keys()).map(index => {
+
+    // 36 15 minute intervals in 9 hours (8am-5pm)
+    return Array.from(Array(36).keys()).map(index => {
         price += Math.random() > 0.5 ? Math.random() : Math.random() * -1;
         price = Math.min(Math.max(0, price), 99999);
-        date.setHours(now.getHours() - (1 + (8 * dayDifference)));
+        date.setMinutes(now.getMinutes() - (15 + (9 * dayDifference)));
         date = new Date(date);
         return new CompanyPriceData(date, price);
     });
@@ -128,8 +131,7 @@ export class Company {
 
     getDataForDays(daysAmount = 1) {
         const dateOffset = (24*60*60*1000) * daysAmount;
-        const now = new Date();
-        now.setTime(now.getTime() - dateOffset);
+        const now = new Date(new Date().getTime() - dateOffset);
         return this.#dataByDate.filter(data => data.Date.getTime() > now.getTime());
     }
 
