@@ -1,6 +1,9 @@
 {
     "scripts": {
-        "build-sass": "sass assets/scss/main.scss assets/main.css",
-        "watch-sass": "sass --watch assets/scss/main.scss assets/main.css"
+        "deploy:js": "xcopy .\\assets\\js ..\\StockExchange.View\\wwwroot\\assets\\js /s /y /d",
+        "deploy:css": "sass assets/scss/main.scss ../StockExchange.View/wwwroot/assets/main.css",
+        "build:dev": "sass assets/scss/main.scss assets/main.css",
+        "build:prod": "npm run deploy:css && npm run deploy:js",
+        "watch": "sass --watch assets/scss/main.scss assets/main.css"
     }
 }
