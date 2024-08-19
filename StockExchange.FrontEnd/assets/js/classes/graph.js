@@ -104,8 +104,8 @@ export class Graph {
         hoverRect.setAttribute('stroke', 'none');
         hoverRect.setAttribute('fill', 'none');
         hoverRect.setAttribute('height', '100%');
-        hoverRect.setAttribute('width', 2);
-        hoverRect.setAttribute('x', graphPoint.X - 1);
+        hoverRect.setAttribute('width', 1);
+        hoverRect.setAttribute('x', graphPoint.X - 0.5);
         hoverRect.setAttribute('y', 0);
         hoverRect.classList.add('stock-exchange__graph-value-rect');
 
@@ -145,8 +145,6 @@ export class Graph {
         yMax = Math.max(...filteredCompanyData.map(data => data.Price));
         xMax = filteredCompanyData.length - 1;
 
-        console.info(filteredCompanyData);
-
         // scope SVG to max values
         this.#svg.setAttribute('viewBox', `0 -1 ${xMax + 1} ${yMax}`);
         this.#scale = 0.05;
@@ -171,8 +169,10 @@ export class Graph {
         this.#svg.appendChild(dashedCenterLine);
 
         // Get all points of value in dataset
-        const points = [...filteredCompanyData].map((data, index) => new GraphPoint(index, data.Price, data.Date));
-        console.info(points);
+        const points = [...filteredCompanyData].map((data, index) => new GraphPoint(index, yMax - data.Price, data.Date));
+
+        // Create groups for each collection of points
+        const groups = points.map(() => document.createElementNS('http://www.w3.org/2000/svg', 'g'));
 
         // Draw circles where the points are, that will show up when a user hovers near them
         const circles = points.map(point => this.createCircleForPoint(point));
@@ -185,25 +185,23 @@ export class Graph {
         const valueLines = points.map(point => this.createValueLineForPoint(point));
 
         // Draw lines in between each pair of points
-        const chunkedPoints = chunk(points, 2);
-        const graphLines = chunkedPoints.map((points, index) => this.createLineForTwoPoints(points[0], points[1], index));
-        console.info(graphLines);
+        //const chunkedPoints = chunk(points, 2);
+        const graphLines = [];
+        let previousPoint = new GraphPoint(0, points[0].Y, points[0].Date);
+        points.forEach((point, index) => {
+            const newPoint = new GraphPoint(index, point.Y, point.Date);
+            graphLines.push(this.createLineForTwoPoints(previousPoint, newPoint));
+            previousPoint = newPoint;
+        });
 
-        // Attach all the SVG elements to the graph
-        hoverRects.forEach(hoverRect => this.#svg.appendChild(hoverRect));
-        valueLines.forEach(valueLine => this.#svg.appendChild(valueLine));
-        graphLines.forEach(graphLine => this.#svg.appendChild(graphLine));
-        circles.forEach(circle => this.#svg.appendChild(circle));
-
-        // Draw lines between each point
-        // let previousPoint = new GraphPoint(0, yMax - filteredCompanyData[0].Price, filteredCompanyData[0].Date);
-        // [...filteredCompanyData].forEach((data, index) => {
-        //     const newGraphPoint = new GraphPoint(index, yMax - data.Price, data.Date);
-        //     const newGraphLine = new GraphLine(previousPoint, newGraphPoint);
-        //     const newLine = this.createLineForTwoPoints(newGraphLine, this.#scale);
-        //     previousPoint = newGraphPoint;
-        //     this.#svg.appendChild(newLine);
-        // });
+        // Attach all the SVG elements to the group, then the groups to the graph
+        for(let i = 0; i < groups.length; i++) {
+            groups[i].appendChild(hoverRects[i]);
+            groups[i].appendChild(valueLines[i]);
+            groups[i].appendChild(graphLines[i]);
+            groups[i].appendChild(circles[i]);
+            this.#svg.appendChild(groups[i]);
+        }
 
         // Draw rectangles behind every "collection" of points (i.e.: for a day,
         // pre-market, the day itself, and after hours; for a week, each day)
