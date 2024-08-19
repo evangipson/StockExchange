@@ -78,7 +78,7 @@ export class Company {
         this.#historicalData = data ?? getMockCompanyPriceData();
         this.#stockAfterHours = coinFlip() ? Math.random() * 3 : Math.random() * -3;
         this.#dataByPrice = this.#historicalData.toSorted((a, b) => b.Price - a.Price);
-        this.#dataByDate = this.#historicalData.toSorted((a, b) => a.Date - b.Date);
+        this.#dataByDate = this.#historicalData.toSorted((a, b) => b.Date - a.Date);
     }
 
     get Name() {
@@ -94,7 +94,7 @@ export class Company {
     }
 
     get StockValue() {
-        return this.#dataByPrice[0].Price;
+        return this.#dataByDate[0].Price;
     }
 
     get StockChange() {
@@ -132,7 +132,7 @@ export class Company {
     getDataForDays(daysAmount = 1) {
         const dateOffset = (24*60*60*1000) * daysAmount;
         const now = new Date(new Date().getTime() - dateOffset);
-        return this.#dataByDate.filter(data => data.Date.getTime() > now.getTime());
+        return this.#dataByDate.filter(data => data.Date.getTime() > now.getTime()).reverse();
     }
 
     getStockChangeByDays(dayAmount = 1) {

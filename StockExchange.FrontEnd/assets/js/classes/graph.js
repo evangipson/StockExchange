@@ -98,7 +98,7 @@ export class Graph {
      * for user hover interaction capture.
      * @param {GraphPoint} graphPoint 
      */
-    createHoverAreaForPoint(graphPoint) {
+    createHoverAreaForPoint(graphPoint, value) {
         const hoverRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
 
         hoverRect.setAttribute('stroke', 'none');
@@ -107,6 +107,7 @@ export class Graph {
         hoverRect.setAttribute('width', 1);
         hoverRect.setAttribute('x', graphPoint.X - 0.5);
         hoverRect.setAttribute('y', 0);
+        hoverRect.setAttribute('company-value', value);
         hoverRect.classList.add('stock-exchange__graph-value-rect');
 
         return hoverRect;
@@ -178,7 +179,7 @@ export class Graph {
         const circles = points.map(point => this.createCircleForPoint(point));
 
         // Draw rectanges behind the points that act as user interactivity areas
-        const hoverRects = points.map(point => this.createHoverAreaForPoint(point));
+        const hoverRects = points.map((point, index) => this.createHoverAreaForPoint(point, filteredCompanyData[index].Price));
 
         // Draw a line from top to bottom through the point that will show upon
         // user hovering over the rectangle, and display the value and date
@@ -192,6 +193,15 @@ export class Graph {
             const newPoint = new GraphPoint(index, point.Y, point.Date);
             graphLines.push(this.createLineForTwoPoints(previousPoint, newPoint));
             previousPoint = newPoint;
+        });
+
+        // Set up event broadcasting from hover rects to update company value in real-time
+        const companyValueElement = document.querySelector('.stock-exchange__company-stock-value');
+        hoverRects.forEach(hoverRect => {
+            const associatedValue = hoverRect.getAttribute('company-value');
+            hoverRect.addEventListener('pointerenter', () => {
+                companyValueElement?.dispatchEvent(new CustomEvent('UpdateCompanyValue', { detail: { newValue: associatedValue }}));
+            });
         });
 
         // Attach all the SVG elements to the group, then the groups to the graph

@@ -100,7 +100,14 @@ const updateCompanyData = (company, daysToShow = 1) => {
 
 const drawCompanyGraph = (company, daysToShow = 1) => {
     const graphCanvas = document.querySelector('.stock-exchange__graph-canvas');
+    const companyValue = document.querySelector('.stock-exchange__company-stock-value');
     const newCompanyGraph = companyGraph || new Graph(graphCanvas);
+    if(!companyGraph) {
+        graphCanvas.addEventListener('pointerout', () => {
+            const initialValue = companyValue.getAttribute('initial-value');
+            companyValue.innerText = formatAsCurrency(initialValue);
+        });
+    }
     newCompanyGraph.updateGraph(company, daysToShow);
 };
 
@@ -112,6 +119,12 @@ const showCompanyData = async () => {
     createGraphPeriods(company);
 
     toggleCompanyPageLoaders();
+
+    const companyValue = document.querySelector('.stock-exchange__company-stock-value');
+    companyValue.setAttribute('initial-value', company.StockValue);
+    companyValue.addEventListener('UpdateCompanyValue', (event) => {
+        companyValue.innerText = formatAsCurrency(event.detail.newValue);
+    });
     return company;
 };
 
