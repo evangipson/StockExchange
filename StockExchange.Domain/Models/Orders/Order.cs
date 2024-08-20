@@ -11,7 +11,9 @@ namespace StockExchange.Domain.Models.Orders
 
 		public Actor? Buyer { get; set; }
 
-		public Stock? Stock { get; set; }
+		public Company? Company { get; set; }
+
+		public decimal Ask { get; set; }
 
 		public int Amount { get; set; }
 

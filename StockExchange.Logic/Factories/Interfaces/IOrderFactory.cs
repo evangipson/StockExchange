@@ -6,6 +6,6 @@ namespace StockExchange.Logic.Factories.Interfaces
 {
 	public interface IOrderFactory
 	{
-		Order? CreateOrder(Actor? buyer, Actor? seller, Stock? stock);
-	}
+        Order? CreateOrder(Actor? buyer, Actor? seller, Company? company, decimal ask);
+    }
 }

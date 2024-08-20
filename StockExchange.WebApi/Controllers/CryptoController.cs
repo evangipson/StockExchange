@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-using StockExchange.Base.Serialization.Repositories.Interfaces;
 using StockExchange.Domain.Models;
+using StockExchange.Logic.Repositories.Interfaces;
 
 namespace StockExchange.WebApi.Controllers
 {
@@ -14,9 +14,9 @@ namespace StockExchange.WebApi.Controllers
 	public class CryptoController : Controller
 	{
 		private readonly ILogger<CryptoController> _logger;
-		private readonly ISerializableRepository<Cryptocurrency> _cryptoRepository;
+		private readonly ICryptoRepository _cryptoRepository;
 
-		public CryptoController(ISerializableRepository<Cryptocurrency> cryptoRepository, ILogger<CryptoController> logger)
+		public CryptoController(ICryptoRepository cryptoRepository, ILogger<CryptoController> logger)
 		{
 			_cryptoRepository = cryptoRepository;
 			_logger = logger;

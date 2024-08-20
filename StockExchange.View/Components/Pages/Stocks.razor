@@ -1,4 +1,7 @@
-﻿@page "/stocks"
+﻿@page "/stocks/{CompanyTicker?}"
+@using StockExchange.Domain.Models
+@using System.Text.Json
+@inject StockExchange.Logic.Repositories.Interfaces.ICompanyRepository _companyRepository
 
 <PageTitle>Stocks</PageTitle>
 
@@ -6,9 +9,9 @@
     <div class='stock-exchange__two-column'>
         <div class='stock-exchange__primary'>
             <div class='stock-exchange__graph'>
-                <div class='stock-exchange__company'>
-                    <p class='stock-exchange__company-name'></p>
-                    <p class='stock-exchange__company-stock-value'></p>
+                <div class='stock-exchange__company' data-company-days=@(Company?.DaysOfData)>
+                    <p class='stock-exchange__company-name' data-company-name=@(Company?.Name) data-company-ticker=@(Company?.TickerName)>@Company?.Name</p>
+                    <p class='stock-exchange__company-stock-value' data-stock-value=@(Company?.LatestStockPrice)>@Company?.LatestStockPrice</p>
                     <div class='stock-exchange__company-stock-change'>
                         <p class='stock-exchange__company-stock-change-value'></p>
                         <p class='stock-exchange__company-stock-change-time'></p>
@@ -18,18 +21,18 @@
                         <p class='stock-exchange__company-after-hours-time'></p>
                     </div>
                 </div>
-                <div class='stock-exchange__graph-data'>
+                <div class='stock-exchange__graph-data' data-graph-data=@(CompanyPriceData)>
                     <svg version='1.1'
-                         xmlns='http://www.w3.org/2000/svg'
-                         xmlns:xlink='http://www.w3.org/1999/xlink'
-                         class='stock-exchange__graph-canvas'></svg>
+                            xmlns='http://www.w3.org/2000/svg'
+                            xmlns:xlink='http://www.w3.org/1999/xlink'
+                            class='stock-exchange__graph-canvas'></svg>
                     <ul class='stock-exchange__graph-period'></ul>
                 </div>
             </div>
         </div>
         <div class='stock-exchange__secondary'>
             <div class='stock-exchange__transaction-window'>
-                <p class='stock-exchange__transaction-header'></p>
+                <p class='stock-exchange__transaction-header'>Order @Company?.TickerName</p>
                 <div class='stock-exchange__input'>
                     <label for='OrderType'>Type of order</label>
                     <select name='OrderType'>
@@ -39,9 +42,73 @@
                 </div>
                 <div class='stock-exchange__row'>
                     <p class='stock-exchange__transaction-content'>Current price</p>
-                    <p class='stock-exchange__transaction-company-price'></p>
+                    <p class='stock-exchange__transaction-company-price'>@Company?.LatestStockPrice</p>
                 </div>
             </div>
         </div>
     </div>
+    <div class='stock-exchange__company-data'>
+        <p class='stock-exchange__company-data-header'>About @Company?.TickerName</p>
+        <p class='stock-exchange__company-data-description'>@Company?.Description</p>
+        <div class='stock-exchange__company-data-row'>
+            <div class='stock-exchange__company-data-content'>
+                <p class='stock-exchange__company-data-key'>CEO</p>
+                <p class='stock-exchange__company-data-value'>@Company?.CEO</p>
+            </div>
+            <div class='stock-exchange__company-data-content'>
+                <p class='stock-exchange__company-data-key'>Employees</p>
+                <p class='stock-exchange__company-data-value'>@Company?.Employees</p>
+            </div>
+            <div class='stock-exchange__company-data-content'>
+                <p class='stock-exchange__company-data-key'>Headquarters</p>
+                <p class='stock-exchange__company-data-value'>@Company?.Headquarters</p>
+            </div>
+            <div class='stock-exchange__company-data-content'>
+                <p class='stock-exchange__company-data-key'>Founded</p>
+                <p class='stock-exchange__company-data-value'>@Company?.Founded.Year</p>
+            </div>
+        </div>
+        <p class='stock-exchange__company-data-header'>@Company?.TickerName Financial Metrics</p>
+        <div class='stock-exchange__company-data-row'>
+            <div class='stock-exchange__company-data-content'>
+                <p class='stock-exchange__company-data-key'>Stock Amount</p>
+                <p class='stock-exchange__company-data-value'>@Company?.StockAmount</p>
+            </div>
+            <div class='stock-exchange__company-data-content'>
+                <p class='stock-exchange__company-data-key'>IPO Date</p>
+                <p class='stock-exchange__company-data-value'>@Company?.IPODate.ToShortDateString()</p>
+            </div>
+            <div class='stock-exchange__company-data-content'>
+                <p class='stock-exchange__company-data-key'>Cost of Goods Sold</p>
+                <p class='stock-exchange__company-data-value'>@Company?.CostOfGoodsSold</p>
+            </div>
+            <div class='stock-exchange__company-data-content'>
+                <p class='stock-exchange__company-data-key'>Net Sales</p>
+                <p class='stock-exchange__company-data-value'>@Company?.NetSales</p>
+            </div>
+        </div>
+    </div>
 </div>
+
+@code {
+    [Parameter]
+    public string? CompanyTicker { get; set; }
+
+    public Company? Company { get; set; }
+
+    public string? CompanyPriceData { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        if(string.IsNullOrEmpty(CompanyTicker))
+        {
+            CompanyTicker = "TBB";
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        Company = _companyRepository.GetEntity(CompanyTicker)?.FirstOrDefault();
+        CompanyPriceData = JsonSerializer.Serialize(Company?.StockPrices);
+    }
+}

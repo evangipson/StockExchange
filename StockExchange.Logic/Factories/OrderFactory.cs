@@ -19,7 +19,7 @@ namespace StockExchange.Logic.Factories
 			_logger = logger;
 		}
 
-		public Order? CreateOrder(Actor? buyer, Actor? seller, Stock? stock)
+		public Order? CreateOrder(Actor? buyer, Actor? seller, Company? company, decimal ask)
 		{
 			_logger.LogInformation($"{nameof(CreateOrder)}: Creating order.");
 
@@ -37,10 +37,11 @@ namespace StockExchange.Logic.Factories
 			{
 				newOrder.Seller = seller;
 			}
-			if (stock != null)
+			if (company != null)
 			{
-				newOrder.Stock = stock;
+				newOrder.Company = company;
 			}
+			newOrder.Ask = ask;
 
 			return newOrder;
 		}

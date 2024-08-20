@@ -68,7 +68,7 @@ namespace StockExchange.Logic.Services
 			}
 
 			var brokerTendency = GetBrokerTransactionTendency(brokerFromOrder);
-			var upside = order.Stock?.Close - order.Stock?.Price;
+			var upside = order.Company?.LatestStockPrice - order.Ask;
 
 			_logger.LogInformation($"{nameof(ShouldBuy)}: broker tendency for buy threshold = {brokerTendency}");
 			_logger.LogInformation($"{nameof(ShouldBuy)}: upside for buy threshold = {upside}");
@@ -85,7 +85,7 @@ namespace StockExchange.Logic.Services
 			}
 
 			var brokerTendency = GetBrokerTransactionTendency(brokerFromOrder);
-			var upside = order.Stock?.Price - order.Stock?.Close;
+            var upside = order.Ask - order.Company?.LatestStockPrice;
 
 			_logger.LogInformation($"{nameof(ShouldSell)}: broker tendency for buy threshold = {brokerTendency}");
 			_logger.LogInformation($"{nameof(ShouldSell)}: upside for buy threshold = {upside}");

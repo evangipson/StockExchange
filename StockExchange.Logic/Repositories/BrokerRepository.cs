@@ -1,11 +1,11 @@
 ﻿using Microsoft.Extensions.Logging;
 
 using StockExchange.Base.DependencyInjection.Attributes;
-using StockExchange.Base.Serialization.Repositories.Interfaces;
 using StockExchange.Base.Serialization.Repositories;
 using StockExchange.Base.Serialization.Services.Interfaces;
 using StockExchange.Base.Resources.Services.Interfaces;
 using StockExchange.Domain.Models.Actors;
+using StockExchange.Logic.Repositories.Interfaces;
 
 namespace StockExchange.Logic.Repositories
 {
@@ -13,8 +13,8 @@ namespace StockExchange.Logic.Repositories
 	/// An implementation of <see cref="SerializableRepository{SerializedType}"/>,
 	/// which will serialize and deserialize a <see cref="Broker"/>.
 	/// </summary>
-	[Service(typeof(ISerializableRepository<Broker>))]
-	public class BrokerRepository : SerializableRepository<Broker>
+	[Service(typeof(IBrokerRepository))]
+	public class BrokerRepository : SerializableRepository<Broker>, IBrokerRepository
 	{
 		private readonly IResourceService _resourceService;
 

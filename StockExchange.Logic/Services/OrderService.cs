@@ -1,10 +1,11 @@
 ﻿using Microsoft.Extensions.Logging;
 
 using StockExchange.Base.DependencyInjection.Attributes;
-using StockExchange.Base.Serialization.Repositories.Interfaces;
+using StockExchange.Domain.Models;
 using StockExchange.Domain.Models.Orders;
 using StockExchange.Domain.Models.Events;
 using StockExchange.Logic.Services.Interfaces;
+using StockExchange.Logic.Repositories.Interfaces;
 
 namespace StockExchange.Logic.Services
 {
@@ -12,12 +13,12 @@ namespace StockExchange.Logic.Services
 	public class OrderService : IOrderService
 	{
 		private readonly ILogger<OrderService> _logger;
-		private readonly ISerializableRepository<Order> _orderRepository;
+		private readonly IOrderRepository _orderRepository;
 		private readonly IBrokerService _brokerService;
 
 		private readonly List<IObserver<Order>> _observers;
 
-		public OrderService(ILogger<OrderService> logger, ISerializableRepository<Order> orderRepository, IBrokerService brokerService)
+		public OrderService(ILogger<OrderService> logger, IOrderRepository orderRepository, IBrokerService brokerService)
 		{
 			_logger = logger;
 			_orderRepository = orderRepository;
@@ -63,8 +64,17 @@ namespace StockExchange.Logic.Services
 		public bool FulfillOrder(Order order)
 		{
 			order.Fulfilled = true;
-			_logger.LogInformation($"{nameof(FulfillOrder)}: Fulfilling order {order.OrderId} from the order book.");
+            
+			_logger.LogInformation($"{nameof(FulfillOrder)}: Updating {order.Company?.Name} stock prices with fulfilled order.");
+            order.Company?.StockPrices.Add(new StockPrice
+			{
+				Amount = order.Ask,
+				Date = DateTime.Now
+			});
+
+            _logger.LogInformation($"{nameof(FulfillOrder)}: Fulfilling order {order.OrderId} from the order book.");
 			_orderRepository.SetEntity(order);
+			
 			return true;
 		}
 	}

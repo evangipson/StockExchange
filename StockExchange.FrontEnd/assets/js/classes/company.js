@@ -35,18 +35,18 @@ const getMockCompanyPriceData = () => {
     return Array.from(Array(daysOfData).keys()).flatMap((data, index) => getDayOfData(price, index));
 };
 
-class CompanyPriceData {
+export class CompanyPriceData {
     #date;
     #amount;
 
     /**
      * 
-     * @param {Date} date 
      * @param {Number} amount 
+     * @param {Date} date 
      */
-    constructor(date, amount) {
-        this.#date = date;
+    constructor(amount, date) {
         this.#amount = amount;
+        this.#date = new Date(date);
     }
 
     get Price() {
@@ -103,8 +103,8 @@ export class Company {
 
     get DaysOfData() {
         const diffTime = Math.abs(this.#dataByDate[0].Date - this.#dataByDate[this.#dataByDate.length - 1].Date);
-        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)); 
-        return diffDays;
+        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+        return diffDays ? diffDays : 1;
     }
 
     get DataByDate() {

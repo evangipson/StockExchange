@@ -12,6 +12,16 @@ namespace StockExchange.Domain.Models
 
 		public string TickerName { get; set; } = string.Empty;
 
+		public string? Description { get; set; }
+
+		public string? CEO { get; set; }
+
+		public int Employees { get; set; }
+
+		public string? Headquarters { get; set; }
+
+		public DateTime Founded { get; set; }
+
 		public int StockAmount { get; set; }
 
 		public DateTime IPODate { get; set; }
@@ -24,9 +34,26 @@ namespace StockExchange.Domain.Models
 
 		public decimal NonOperatingItems { get; set; }
 
-		public List<decimal> Expenses { get; set; } = new List<decimal>();
+		public List<decimal> Expenses { get; set; } = [];
 
-		public Stock? Stock { get; set; }
+		public List<StockPrice> StockPrices { get; set; } = [];
+
+		public List<StockPrice> StockPricesByDate => [.. StockPrices.OrderBy(stockPrice => stockPrice.Date)];
+
+		public decimal? LatestStockPrice => StockPricesByDate.FirstOrDefault()?.Amount ?? null;
+
+		public int DaysOfData
+		{
+			get
+			{
+				if(StockPricesByDate == null || StockPricesByDate.Count < 2)
+				{
+					return 0;
+				}
+				var days = new TimeSpan(StockPricesByDate.Last().Date.Ticks - StockPricesByDate.First().Date.Ticks).Days;
+                return days == 0 ? 1 : days;
+            }
+        }
 
 		public decimal GrossProfit => NetSales - CostOfGoodsSold;
 
@@ -59,8 +86,7 @@ namespace StockExchange.Domain.Models
 				$"Operating Expenses: {OperatingExpenses.ToString("C", CultureInfo.CurrentCulture)}",
 				$"Operating Income: {OperatingIncome.ToString("C", CultureInfo.CurrentCulture)}",
 				$"Net Income: {NetIncome.ToString("C", CultureInfo.CurrentCulture)}",
-				$"Stock Amount: {StockAmount.ToString("N0")}",
-				$"Stock: {Stock}",
+				$"Stock Amount: {StockAmount.ToString("N0")}"
 			};
 			return string.Join("\n\t", companyData);
 		}

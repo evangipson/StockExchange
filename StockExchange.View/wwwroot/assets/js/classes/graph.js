@@ -30,24 +30,6 @@ class GraphPoint {
     }
 }
 
-class GraphLine {
-    #startPoint;
-    #endPoint;
-
-    constructor(startPoint, endPoint) {
-        this.#startPoint = startPoint;
-        this.#endPoint = endPoint;
-    }
-
-    get StartPoint() {
-        return this.#startPoint;
-    }
-
-    get EndPoint() {
-        return this.#endPoint;
-    }
-}
-
 export class Graph {
     #svg;
     #scale;

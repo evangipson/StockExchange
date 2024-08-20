@@ -3,9 +3,9 @@
 using StockExchange.Base.DependencyInjection.Attributes;
 using StockExchange.Base.Resources.Services.Interfaces;
 using StockExchange.Base.Serialization.Repositories;
-using StockExchange.Base.Serialization.Repositories.Interfaces;
 using StockExchange.Base.Serialization.Services.Interfaces;
 using StockExchange.Domain.Models;
+using StockExchange.Logic.Repositories.Interfaces;
 
 namespace StockExchange.Logic.Repositories
 {
@@ -13,8 +13,8 @@ namespace StockExchange.Logic.Repositories
 	/// An implementation of <see cref="SerializableRepository{SerializedType}"/>,
 	/// which will serialize and deserialize a <see cref="Cryptocurrency"/>.
 	/// </summary>
-	[Service(typeof(ISerializableRepository<Cryptocurrency>))]
-	public class CryptoRepository : SerializableRepository<Cryptocurrency>
+	[Service(typeof(ICryptoRepository))]
+	public class CryptoRepository : SerializableRepository<Cryptocurrency>, ICryptoRepository
 	{
 		private readonly IResourceService _resourceService;
 

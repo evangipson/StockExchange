@@ -3,9 +3,9 @@
 using StockExchange.Base.DependencyInjection.Attributes;
 using StockExchange.Base.Resources.Services.Interfaces;
 using StockExchange.Base.Serialization.Repositories;
-using StockExchange.Base.Serialization.Repositories.Interfaces;
 using StockExchange.Base.Serialization.Services.Interfaces;
 using StockExchange.Domain.Models.Orders;
+using StockExchange.Logic.Repositories.Interfaces;
 
 namespace StockExchange.Logic.Repositories
 {
@@ -13,8 +13,8 @@ namespace StockExchange.Logic.Repositories
 	/// An implementation of <see cref="SerializableRepository{SerializedType}"/>,
 	/// which will serialize and deserialize an <see cref="Order"/>.
 	/// </summary>
-	[Service(typeof(ISerializableRepository<Order>))]
-	public class OrderRepository : SerializableRepository<Order>
+	[Service(typeof(IOrderRepository))]
+	public class OrderRepository : SerializableRepository<Order>, IOrderRepository
 	{
 		private readonly IResourceService _resourceService;
 

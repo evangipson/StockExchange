@@ -2,7 +2,7 @@ import { formatAsCurrency } from "../utils/currencyUtils.js";
 import { getDaysFromYearStart } from "../utils/dateUtils.js";
 import { toggleLoader } from "../utils/loadingUtils.js";
 import { fetchCompanyData } from "../api/companyApi.js";
-import { Company } from "../classes/company.js";
+import { Company, CompanyPriceData } from "../classes/company.js";
 import { Graph } from "../classes/graph.js";
 
 let companyGraph;
@@ -19,6 +19,10 @@ const updateGraphPeriod = (company, graphPeriods, clickedPeriod) => {
     companyChangeTime.innerText = stockChangeMessage;
 };
 
+/**
+ * 
+ * @param {Company} company 
+ */
 const createGraphPeriods = (company) => {
     const graphPeriodList = document.querySelector('.stock-exchange__graph-period');
     const periods = [
@@ -104,7 +108,7 @@ const drawCompanyGraph = (company, daysToShow = 1) => {
     const newCompanyGraph = companyGraph || new Graph(graphCanvas);
     if(!companyGraph) {
         graphCanvas.addEventListener('pointerout', () => {
-            const initialValue = companyValue.getAttribute('initial-value');
+            const initialValue = companyValue.getAttribute('data-stock-value');
             companyValue.innerText = formatAsCurrency(initialValue);
         });
     }
@@ -112,19 +116,35 @@ const drawCompanyGraph = (company, daysToShow = 1) => {
 };
 
 const showCompanyData = async () => {
+    const graphData = document.querySelector('.stock-exchange__graph-data');
+    const companyNameElement = document.querySelector('.stock-exchange__company-name'); 
+    const companyStockPricesJSON = graphData?.getAttribute('data-graph-data');
+    const companyName = companyNameElement?.getAttribute('data-company-name');
+    const companyTicker = companyNameElement?.getAttribute('data-company-ticker');
     let company;
+    let companyStockPrices;
+    let stockPrices;
 
     toggleCompanyPageLoaders();
-    company = await fetchCompanyData();
+
+    if(!companyStockPricesJSON) {
+        company = await fetchCompanyData();
+        companyStockPrices = company.AllPriceData;
+    } else {
+        companyStockPrices = JSON.parse(companyStockPricesJSON);
+        stockPrices = companyStockPrices.map(stockPrices => new CompanyPriceData(stockPrices.Amount, stockPrices.Date));
+        company = new Company(companyName, companyTicker, stockPrices);
+    }
+
     createGraphPeriods(company);
 
     toggleCompanyPageLoaders();
 
     const companyValue = document.querySelector('.stock-exchange__company-stock-value');
-    companyValue.setAttribute('initial-value', company.StockValue);
     companyValue.addEventListener('UpdateCompanyValue', (event) => {
         companyValue.innerText = formatAsCurrency(event.detail.newValue);
     });
+
     return company;
 };
 

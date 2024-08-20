@@ -2,10 +2,10 @@
 
 using StockExchange.Base.DependencyInjection.Attributes;
 using StockExchange.Base.Serialization.Services.Interfaces;
-using StockExchange.Base.Serialization.Repositories.Interfaces;
 using StockExchange.Base.Serialization.Repositories;
 using StockExchange.Base.Resources.Services.Interfaces;
 using StockExchange.Domain.Models;
+using StockExchange.Logic.Repositories.Interfaces;
 
 namespace StockExchange.Logic.Repositories
 {
@@ -13,8 +13,8 @@ namespace StockExchange.Logic.Repositories
 	/// An implementation of <see cref="SerializableRepository{SerializedType}"/>,
 	/// which will serialize and deserialize a <see cref="Company"/>.
 	/// </summary>
-	[Service(typeof(ISerializableRepository<Company>))]
-	public class CompanyRepository : SerializableRepository<Company>
+	[Service(typeof(ICompanyRepository))]
+	public class CompanyRepository : SerializableRepository<Company>, ICompanyRepository
 	{
 		private readonly IResourceService _resourceService;
 

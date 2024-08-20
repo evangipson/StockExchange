@@ -7,6 +7,7 @@ using StockExchange.Base.DependencyInjection.Extensions;
 using StockExchange.Base.Serialization.Repositories.Interfaces;
 using StockExchange.Base.Serialization.Services.Interfaces;
 using StockExchange.Logic.Factories.Interfaces;
+using StockExchange.Logic.Repositories.Interfaces;
 using StockExchange.Logic.Services.Interfaces;
 using StockExchange.View.Components;
 using StockExchange.View.Components.Account;
@@ -31,17 +32,16 @@ builder.Services.AddServicesFromAssembly(Assembly.GetAssembly(typeof(ISerializat
 builder.Services.AddServicesFromAssembly(Assembly.GetAssembly(typeof(IOrderFactory)));
 builder.Services.AddServicesFromAssembly(Assembly.GetAssembly(typeof(ISerializableRepository<>)));
 builder.Services.AddServicesFromAssembly(Assembly.GetAssembly(typeof(IPricingService)));
+builder.Services.AddServicesFromAssembly(Assembly.GetAssembly(typeof(ICompanyRepository)));
 
 builder.Services.AddAuthentication(options =>
-    {
-        options.DefaultScheme = IdentityConstants.ApplicationScheme;
-        options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
-    })
-    .AddIdentityCookies();
+{
+    options.DefaultScheme = IdentityConstants.ApplicationScheme;
+    options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
+}).AddIdentityCookies();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));
+builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)

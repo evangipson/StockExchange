@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-using StockExchange.Base.Serialization.Repositories.Interfaces;
 using StockExchange.Domain.Models.Actors;
+using StockExchange.Logic.Repositories.Interfaces;
 
 namespace StockExchange.WebApi.Controllers
 {
@@ -14,9 +14,9 @@ namespace StockExchange.WebApi.Controllers
 	public class BrokerController : Controller
 	{
 		private readonly ILogger<BrokerController> _logger;
-		private readonly ISerializableRepository<Broker> _brokerRepository;
+		private readonly IBrokerRepository _brokerRepository;
 
-		public BrokerController(ISerializableRepository<Broker> brokerRepository, ILogger<BrokerController> logger)
+		public BrokerController(IBrokerRepository brokerRepository, ILogger<BrokerController> logger)
 		{
 			_brokerRepository = brokerRepository;
 			_logger = logger;
