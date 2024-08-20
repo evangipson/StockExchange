@@ -1,0 +1,140 @@
+{
+  "name": "TableBrains",
+  "tickerName": "TBB",
+  "description": "TableBrains could be a software-as-a-service (SaaS) company that provides a powerful platform for businesses to clean and prepare data, visualize data, perform complex data analysis, and automate data-driven decisions.",
+  "ceo": "Dr. Anya Petrova",
+  "employees": 2500,
+  "headquarters": "Cambridge, England",
+  "founded": "2022-04-19T01:20:38.109Z",
+  "stockAmount": 200000,
+  "ipoDate": "2024-02-07T01:20:38.109Z",
+  "costOfGoodsSold": 1000000,
+  "netSales": 1200000,
+  "debt": 2900000,
+  "nonOperatingItems": 500000,
+  "expenses": [
+    11000
+  ],
+  "stockPrices": [
+    {
+      "amount": 11.00,
+      "date": "2024-08-20T01:00:00.000Z"
+    },
+    {
+      "amount": 10.86,
+      "date": "2024-08-20T00:45:00.000Z"
+    },
+    {
+      "amount": 10.85,
+      "date": "2024-08-20T00:30:00.000Z"
+    },
+    {
+      "amount": 10.82,
+      "date": "2024-08-20T00:15:00.000Z"
+    },
+    {
+      "amount": 10.91,
+      "date": "2024-08-19T23:45:00.000Z"
+    },
+    {
+      "amount": 10.89,
+      "date": "2024-08-19T23:30:00.000Z"
+    },
+    {
+      "amount": 10.89,
+      "date": "2024-08-19T23:15:00.000Z"
+    },
+    {
+      "amount": 10.78,
+      "date": "2024-08-19T23:00:00.000Z"
+    },
+    {
+      "amount": 10.75,
+      "date": "2024-08-19T22:45:00.000Z"
+    },
+    {
+      "amount": 10.72,
+      "date": "2024-08-19T22:30:00.000Z"
+    },
+    {
+      "amount": 10.71,
+      "date": "2024-08-19T22:15:00.000Z"
+    },
+    {
+      "amount": 10.70,
+      "date": "2024-08-19T21:00:00.000Z"
+    }
+  ],
+  "entityId": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+}
+
+{
+    "name": "Zag",
+    "tickerName": "ZAG",
+    "description": "Zag is an unconventional digital marketing agency that specializes in crafting unconventional campaigns. By challenging the status quo and embracing innovation, they help clients stand out and achieve their goals.",
+    "ceo": "Jaxon Quinn",
+    "employees": 2500,
+    "headquarters": "Spokane, Washington",
+    "founded": "2019-11-13T01:20:38.109Z",
+    "stockAmount": 40000,
+    "ipoDate": "2021-07-27T01:20:38.109Z",
+    "costOfGoodsSold": 230000,
+    "netSales": 1200000,
+    "debt": 0,
+    "nonOperatingItems": 24000,
+    "expenses": [
+      14000,
+      1199
+    ],
+    "stockPrices": [
+      {
+        "amount": 3.10,
+        "date": "2024-08-20T01:00:00.000Z"
+      },
+      {
+        "amount": 3.11,
+        "date": "2024-08-20T00:45:00.000Z"
+      },
+      {
+        "amount": 3.13,
+        "date": "2024-08-20T00:30:00.000Z"
+      },
+      {
+        "amount": 3.21,
+        "date": "2024-08-20T00:15:00.000Z"
+      },
+      {
+        "amount": 3.22,
+        "date": "2024-08-19T23:45:00.000Z"
+      },
+      {
+        "amount": 3.22,
+        "date": "2024-08-19T23:30:00.000Z"
+      },
+      {
+        "amount": 3.22,
+        "date": "2024-08-19T23:15:00.000Z"
+      },
+      {
+        "amount": 3.31,
+        "date": "2024-08-19T23:00:00.000Z"
+      },
+      {
+        "amount": 3.32,
+        "date": "2024-08-19T22:45:00.000Z"
+      },
+      {
+        "amount": 3.33,
+        "date": "2024-08-19T22:30:00.000Z"
+      },
+      {
+        "amount": 3.31,
+        "date": "2024-08-19T22:15:00.000Z"
+      },
+      {
+        "amount": 3.28,
+        "date": "2024-08-19T21:00:00.000Z"
+      }
+    ],
+    "entityId": "4fb82f6d-d4a3-5135-fffc-1cabd5d2ae11"
+}
