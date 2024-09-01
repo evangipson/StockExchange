@@ -27,6 +27,7 @@ namespace StockExchange.Base.Serialization.Extensions
 			{
 				using MemoryStream stream = new();
 				serializer.WriteObject(stream, objectToSerialize);
+				stream.Close();
 				return stream.ToArray();
 			}
 			catch (Exception ex)
@@ -143,7 +144,8 @@ namespace StockExchange.Base.Serialization.Extensions
 				using BinaryWriter writer = new(File.OpenWrite(fileName));
 				writer.Write(Serialize(objectToSerialize));
 				writer.Flush();
-				return true;
+                writer.Close();
+                return true;
 			}
 			catch
 			{

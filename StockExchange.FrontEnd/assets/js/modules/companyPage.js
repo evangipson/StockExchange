@@ -129,10 +129,9 @@ const showCompanyData = async () => {
 
     if(!companyStockPricesJSON) {
         company = await fetchCompanyData();
-        companyStockPrices = company.AllPriceData;
     } else {
         companyStockPrices = JSON.parse(companyStockPricesJSON);
-        stockPrices = companyStockPrices.map(stockPrices => new CompanyPriceData(stockPrices.Amount, stockPrices.Date));
+        stockPrices = companyStockPrices?.map(stockPrices => new CompanyPriceData(stockPrices.Amount, stockPrices.Date));
         company = new Company(companyName, companyTicker, stockPrices);
     }
 
